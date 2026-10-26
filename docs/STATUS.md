@@ -9,6 +9,11 @@
 - Datenschutzerklärung: **demo draft** (shown with a draft note on the page). Facts used: hosting at Hostinger
   International Ltd. (Larnaca, Cyprus), no cookies/tracking/external services, self-hosted fonts, contact form,
   BayLDA as authority. PE Admin must review it; the video-conference tool is a placeholder.
+- Feedback round 1 (26.10.): Über uns cards with live navy scenes (AboutCard.astro); header always visible,
+  compact (80 → 60 px) once scrolled, dark glass over full-width dark sections; calm spark field in the footer;
+  hero: sparks glide (eased, no spring wobble) into the real PE mark (white P, blue E-bars, sampled from the logo
+  paths); bokeh discs replaced by fine dust + slow light rays from the mark and a richer night gradient; hero
+  kicker shows the real P/E symbol.
 - Contact endpoint `/api/contact` (stores to `data/submissions`, mails once SMTP env vars are set).
 
 ## New copy (not on pe-admin.de, needs client approval)

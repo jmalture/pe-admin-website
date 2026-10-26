@@ -54,6 +54,27 @@ import { T, FIRM } from '../i18n';
 </header>
 
 <script>
+  // Over dark sections (.pe-dark, the hero) the scrolled header turns into dark glass with white text.
+  const hd = document.querySelector<HTMLElement>('[data-header]');
+  const darks = [...document.querySelectorAll<HTMLElement>('.pe-dark, .pe-hero')];
+  if (hd && darks.length) {
+    let ticking = false;
+    const check = () => {
+      ticking = false;
+      const y = 30;
+      hd.classList.toggle(
+        'is-on-dark',
+        darks.some((d) => {
+          const r = d.getBoundingClientRect();
+          // only full-width dark sections count (not a dark card such as the contact reach card)
+          return r.top <= y && r.bottom >= y && r.width >= innerWidth * 0.9;
+        }),
+      );
+    };
+    addEventListener('scroll', () => !ticking && ((ticking = true), requestAnimationFrame(check)), { passive: true });
+    check();
+  }
+
   // Highlight the anchor of the section in view.
   const links = [...document.querySelectorAll<HTMLAnchorElement>('[data-nav]')];
   const sections = links.map((a) => document.getElementById(a.dataset.nav!)).filter(Boolean) as HTMLElement[];
@@ -101,14 +122,31 @@ import { T, FIRM } from '../i18n';
   [data-hero='light'] .pe-hd::before {
     opacity: 1;
   }
+  .pe-hd.is-scrolled.is-on-dark {
+    --hd-fg: #fff;
+  }
+  .pe-hd.is-scrolled.is-on-dark::before {
+    background: rgba(2, 27, 42, 0.72);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+  .pe-hd::before {
+    transition:
+      opacity var(--pe-med) var(--pe-ease),
+      background-color var(--pe-med) var(--pe-ease);
+  }
   .pe-hd.is-hidden {
     transform: translateY(-100%);
   }
+  /* full height over the hero, compact (60px) once scrolled */
   .pe-hd__bar {
     display: flex;
     align-items: center;
     gap: clamp(16px, 3vw, 44px);
     height: var(--pe-header-h);
+    transition: height var(--pe-med) var(--pe-ease);
+  }
+  .pe-hd.is-scrolled .pe-hd__bar {
+    height: 60px;
   }
   .pe-hd__logo {
     flex: none;
@@ -117,6 +155,20 @@ import { T, FIRM } from '../i18n';
   .pe-hd__logo svg {
     width: auto;
     height: 30px;
+    transition: height var(--pe-med) var(--pe-ease);
+  }
+  .pe-hd.is-scrolled .pe-hd__logo svg {
+    height: 24px;
+  }
+  .pe-hd .pe-hd__cta {
+    transition:
+      min-height var(--pe-med) var(--pe-ease),
+      padding var(--pe-med) var(--pe-ease),
+      background-color var(--pe-fast) var(--pe-ease);
+  }
+  .pe-hd.is-scrolled .pe-hd__cta {
+    min-height: 36px;
+    padding: 7px 16px;
   }
   .pe-hd__nav {
     margin-left: auto;

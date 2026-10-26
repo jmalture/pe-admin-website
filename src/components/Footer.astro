@@ -1,5 +1,5 @@
 ---
-/** Footer: navy with a faint spark field, logo, claim, contact, anchors and legal links. */
+/** Footer: navy with a calm live spark field (particles.ts, light mode), logo, claim, contact, anchors, legal links. */
 import Logo from './ui/Logo.astro';
 import Icon from './ui/Icon.astro';
 import { T, FIRM } from '../i18n';
@@ -7,7 +7,8 @@ const year = new Date().getFullYear();
 ---
 
 <footer class="pe-ft pe-dark">
-  <div class="pe-wrap">
+  <canvas class="pe-ft__canvas" aria-hidden="true"></canvas>
+  <div class="pe-wrap pe-ft__inner">
     <div class="pe-ft__top">
       <div class="pe-ft__brand">
         <a href="/" class="pe-ft__logo" aria-label="PE Admin GmbH"><Logo /></a>
@@ -42,7 +43,24 @@ const year = new Date().getFullYear();
   </div>
 </footer>
 
+<script>
+  import { startParticles } from '../scripts/particles';
+  const c = document.querySelector<HTMLCanvasElement>('.pe-ft__canvas');
+  // a calmer echo of the hero: fewer sparks, no logo formation, faint flare top right
+  if (c) startParticles(c, { formation: false, density: 0.35, flare: 0.45, focus: [0.86, 0.25], scrollFade: false });
+</script>
+
 <style is:global>
+  .pe-ft__canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+  .pe-ft__inner {
+    position: relative;
+  }
   .pe-ft {
     position: relative;
     overflow: clip;

@@ -44,7 +44,7 @@
 
   --pe-max: 1280px;
   --pe-gutter: clamp(16px, 5vw, 64px);
-  --pe-header-h: 80px;
+  --pe-header-h: 80px; /* compact 60px once scrolled, see Header.astro */
   color-scheme: light;
 }
 
@@ -58,7 +58,7 @@ html {
   overflow-x: clip;
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;
-  scroll-padding-top: calc(var(--pe-header-h) + 8px);
+  scroll-padding-top: 68px; /* compact header + 8px */
 }
 body {
   margin: 0;
@@ -193,6 +193,15 @@ textarea {
     linear-gradient(var(--pe-ice), var(--pe-ice)) 0 0 / 100% 3px no-repeat,
     linear-gradient(var(--pe-amber), var(--pe-amber)) 0 50% / 70% 3px no-repeat,
     linear-gradient(var(--pe-ice), var(--pe-ice)) 0 100% / 100% 3px no-repeat;
+}
+/* hero kicker: the real P/E symbol instead of the bars (white P, brand-blue E-bars) */
+.pe-kicker--mark::before {
+  content: none;
+}
+.pe-kicker__mark {
+  width: auto;
+  height: 22px;
+  color: #fff;
 }
 .pe-h2 {
   margin-top: 18px;

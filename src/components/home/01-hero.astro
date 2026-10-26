@@ -3,6 +3,7 @@
  * Hero: deep navy with the live light particles (src/scripts/particles.ts) instead of the two stock photos.
  * Text 1:1 from pe-admin.de: "PE Admin GmbH" + the claim, split into headline and lead.
  */
+import Logo from '../ui/Logo.astro';
 import Icon from '../ui/Icon.astro';
 import { T } from '../../i18n';
 ---
@@ -11,7 +12,9 @@ import { T } from '../../i18n';
   <canvas class="pe-hero__canvas" aria-hidden="true"></canvas>
   <div class="pe-hero__vignette" aria-hidden="true"></div>
   <div class="pe-wrap pe-hero__content">
-    <span class="pe-kicker pe-kicker--light" data-reveal="fade">{T.hero_kicker}</span>
+    <span class="pe-kicker pe-kicker--light pe-kicker--mark" data-reveal="fade"
+      ><Logo mark class="pe-kicker__mark" label="" />{T.hero_kicker}</span
+    >
     <h1 class="pe-hero__title pe-lines">
       <span class="pe-line" style="--l:0"><span>{T.hero_l1}</span></span>
       <span class="pe-line" style="--l:1"><span class="pe-hero__glow">{T.hero_l2}</span></span>
@@ -40,10 +43,68 @@ import { T } from '../../i18n';
     min-height: max(640px, 100svh);
     overflow: clip;
     color: #fff;
+    --fx: 79%;
+    --fy: 47%;
+    /* deep night base, a cold blue sweep from the top left, a teal undertone at the bottom and the warm light
+       around the mark */
     background:
-      radial-gradient(45% 55% at 79% 47%, rgba(255, 154, 77, 0.14), transparent 65%),
-      radial-gradient(70% 80% at 15% 20%, rgba(27, 110, 168, 0.35), transparent 60%),
-      linear-gradient(160deg, #06324b 0%, var(--pe-navy) 35%, var(--pe-night) 100%);
+      radial-gradient(40% 50% at var(--fx) var(--fy), rgba(255, 154, 77, 0.16), transparent 65%),
+      radial-gradient(55% 45% at 92% 8%, rgba(73, 181, 242, 0.22), transparent 70%),
+      radial-gradient(80% 60% at 8% 0%, rgba(27, 110, 168, 0.55), transparent 65%),
+      radial-gradient(90% 55% at 30% 105%, rgba(16, 120, 140, 0.28), transparent 70%),
+      linear-gradient(168deg, #052b42 0%, #03223a 45%, var(--pe-night) 100%);
+  }
+  /* slow light rays fanning out from the mark: two conic layers with uneven spacing turning in opposite
+     directions, masked to fade out with distance */
+  @property --pe-ray {
+    syntax: '<angle>';
+    inherits: false;
+    initial-value: 0deg;
+  }
+  .pe-hero::before,
+  .pe-hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    pointer-events: none;
+    -webkit-mask: radial-gradient(70% 85% at var(--fx) var(--fy), #000 0%, rgba(0, 0, 0, 0.45) 35%, transparent 72%);
+    mask: radial-gradient(70% 85% at var(--fx) var(--fy), #000 0%, rgba(0, 0, 0, 0.45) 35%, transparent 72%);
+  }
+  .pe-hero::before {
+    background: repeating-conic-gradient(
+      from var(--pe-ray) at var(--fx) var(--fy),
+      transparent 0deg,
+      rgba(132, 209, 252, 0.075) 2.5deg,
+      transparent 5deg 13deg
+    );
+    animation: pe-rays 220s linear infinite;
+  }
+  .pe-hero::after {
+    background: repeating-conic-gradient(
+      from var(--pe-ray) at var(--fx) var(--fy),
+      transparent 0deg 6deg,
+      rgba(255, 200, 150, 0.05) 9deg,
+      transparent 12deg 21deg
+    );
+    animation: pe-rays 300s linear infinite reverse;
+  }
+  @keyframes pe-rays {
+    to {
+      --pe-ray: 360deg;
+    }
+  }
+  @media (max-width: 899px) {
+    .pe-hero {
+      --fx: 62%;
+      --fy: 30%;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pe-hero::before,
+    .pe-hero::after {
+      animation: none;
+    }
   }
   .pe-hero__canvas {
     position: absolute;

@@ -1,0 +1,449 @@
+---
+/**
+ * One of the three Über uns cards: a small live navy scene on top (sparks like the hero), then number, label and
+ * the paragraph with its key phrase highlighted. Scenes are built from the card's own text:
+ *   team    : the team in the middle exchanging signals with Kunden, Anleger, Behörden
+ *   modules : 8 module tiles switching between all lit (Full-Service) and a few picked (Module)
+ *   place   : Gilching west of München, Video / Mail / Telefon bubbles pulsing in turn
+ */
+import Icon from '../ui/Icon.astro';
+import Logo from '../ui/Logo.astro';
+
+interface Props {
+  index: number;
+  item: { key: string; label: string; text: string; mark: string; scene: string[] };
+}
+const { index, item } = Astro.props;
+const [before, after] = item.text.split(item.mark);
+const uid = `ac${index}`;
+const nodes = [
+  [60, 52],
+  [340, 52],
+  [200, 168],
+] as const;
+---
+
+<li class:list={['pe-acard', `pe-acard--${item.key}`]} data-reveal style={`--i:${index}`}>
+  <div class="pe-acard__scene" data-live aria-hidden="true">
+    <span class="pe-acard__sparks"></span>
+    {
+      item.key === 'team' && (
+        <svg viewBox="0 0 400 210">
+          <defs>
+            {nodes.map(([x, y], i) => (
+              <path id={`${uid}-l${i}`} d={`M 200 108 L ${x} ${y}`} />
+            ))}
+          </defs>
+          {nodes.map((_, i) => (
+            <use href={`#${uid}-l${i}`} class="pe-acard__line" />
+          ))}
+          {nodes.map((_, i) =>
+            [0, 1].map((k) => (
+              <circle r="3" class:list={['pe-acard__dot', { 'pe-acard__dot--warm': k === 1 }]} visibility="hidden">
+                <set attributeName="visibility" to="visible" begin={`${i * 0.7 + k * 1.6}s`} />
+                <animateMotion
+                  dur="3.2s"
+                  begin={`${i * 0.7 + k * 1.6}s`}
+                  repeatCount="indefinite"
+                  keyPoints={k === 0 ? '0;1' : '1;0'}
+                  keyTimes="0;1"
+                  calcMode="linear"
+                >
+                  <mpath href={`#${uid}-l${i}`} />
+                </animateMotion>
+              </circle>
+            )),
+          )}
+          {nodes.map(([x, y], i) => (
+            <g class="pe-acard__chip" style={`--n:${i}`}>
+              <rect x={x - 48} y={y - 16} width="96" height="32" rx="10" />
+              <text x={x} y={y + 5}>
+                {item.scene[i]}
+              </text>
+            </g>
+          ))}
+        </svg>
+      )
+    }
+    {
+      item.key === 'team' && (
+        <span class="pe-acard__core">
+          <Logo mark />
+        </span>
+      )
+    }
+    {
+      item.key === 'modules' && (
+        <div class="pe-acard__tiles">
+          <span class="pe-acard__grid">
+            {[0, 1, 2, 3, 4, 5, 6, 7].map((n) => (
+              <i class:list={{ 'is-pick': [1, 4, 6].includes(n) }} style={`--t:${n}`} />
+            ))}
+          </span>
+          <span class="pe-acard__mode">
+            <b>{item.scene[0]}</b>
+            <b>{item.scene[1]}</b>
+          </span>
+        </div>
+      )
+    }
+    {
+      item.key === 'place' && (
+        <>
+          <svg viewBox="0 0 400 210">
+            <defs>
+              <path id={`${uid}-r`} d="M 104 140 C 170 92, 240 92, 300 118" />
+            </defs>
+            <circle cx="300" cy="118" r="48" class="pe-acard__city" />
+            <circle cx="300" cy="118" r="26" class="pe-acard__city pe-acard__city--in" />
+            <use href={`#${uid}-r`} class="pe-acard__line" />
+            <circle r="3.4" class="pe-acard__dot pe-acard__dot--warm" visibility="hidden">
+              <set attributeName="visibility" to="visible" begin="0.4s" />
+              <animateMotion dur="3.4s" begin="0.4s" repeatCount="indefinite">
+                <mpath href={`#${uid}-r`} />
+              </animateMotion>
+            </circle>
+            <circle cx="104" cy="140" r="6.5" class="pe-acard__pin" />
+            <circle cx="104" cy="140" r="6.5" class="pe-acard__pulse" />
+            <text x="104" y="172" class="pe-acard__label">
+              {item.scene[0]}
+            </text>
+            <text x="300" y="186" class="pe-acard__label pe-acard__label--soft">
+              {item.scene[1]}
+            </text>
+          </svg>
+          <span class="pe-acard__bubbles">
+            <i style="--b:0">
+              <Icon name="video" size={16} />
+            </i>
+            <i style="--b:1">
+              <Icon name="mail" size={16} />
+            </i>
+            <i style="--b:2">
+              <Icon name="phone" size={16} />
+            </i>
+          </span>
+        </>
+      )
+    }
+  </div>
+  <div class="pe-acard__body">
+    <span class="pe-acard__num">0{index + 1}</span>
+    <h3>{item.label}</h3>
+    <p>{before}<mark>{item.mark}</mark>{after}</p>
+  </div>
+</li>
+
+<style is:global>
+  .pe-acard {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid var(--pe-line);
+    border-radius: var(--pe-leaf);
+    transition:
+      border-color var(--pe-med) var(--pe-ease),
+      translate var(--pe-med) var(--pe-ease);
+  }
+  .pe-acard:hover {
+    border-color: rgba(27, 110, 168, 0.4);
+    translate: 0 -3px;
+  }
+  /* scene */
+  .pe-acard__scene {
+    position: relative;
+    container-type: inline-size;
+    aspect-ratio: 400 / 210;
+    overflow: hidden;
+    background:
+      radial-gradient(60% 80% at 50% 55%, rgba(27, 110, 168, 0.45), transparent 70%),
+      radial-gradient(30% 40% at 85% 20%, rgba(255, 154, 77, 0.14), transparent 70%),
+      linear-gradient(150deg, #06324b, var(--pe-night));
+  }
+  .pe-acard__scene > svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  /* drifting sparks, a light echo of the hero */
+  .pe-acard__sparks {
+    position: absolute;
+    inset: -40% 0 0;
+    background-image:
+      radial-gradient(1.6px 1.6px at 12% 30%, #ffbc7d, transparent),
+      radial-gradient(1.4px 1.4px at 28% 72%, #84d1fc, transparent),
+      radial-gradient(2px 2px at 46% 18%, #ffbc7d, transparent),
+      radial-gradient(1.3px 1.3px at 64% 58%, #84d1fc, transparent),
+      radial-gradient(1.8px 1.8px at 82% 36%, #ffbc7d, transparent),
+      radial-gradient(1.2px 1.2px at 92% 80%, #84d1fc, transparent),
+      radial-gradient(1.5px 1.5px at 6% 88%, #ffbc7d, transparent),
+      radial-gradient(1.4px 1.4px at 56% 92%, #ffbc7d, transparent);
+    opacity: 0.8;
+    animation: pe-acard-drift 14s linear infinite;
+  }
+  @keyframes pe-acard-drift {
+    to {
+      translate: 0 -28%;
+    }
+  }
+  .pe-acard__line {
+    fill: none;
+    stroke: rgba(132, 209, 252, 0.3);
+    stroke-width: 1.5;
+    stroke-dasharray: 3 7;
+    animation: pe-flow-dash 1.4s linear infinite;
+  }
+  .pe-acard__dot {
+    fill: var(--pe-ice);
+    filter: drop-shadow(0 0 5px rgba(132, 209, 252, 0.9));
+  }
+  .pe-acard__dot--warm {
+    fill: var(--pe-amber);
+    filter: drop-shadow(0 0 5px rgba(255, 154, 77, 0.9));
+  }
+  /* team */
+  .pe-acard__chip rect {
+    fill: #0b3550; /* opaque so the signal dots end underneath the label */
+    stroke: rgba(255, 255, 255, 0.25);
+    animation: pe-chip 4.8s var(--pe-ease) infinite;
+    animation-delay: calc(1.2s + var(--n) * 0.7s);
+  }
+  @keyframes pe-chip {
+    0%,
+    60%,
+    100% {
+      stroke: rgba(255, 255, 255, 0.25);
+    }
+    70% {
+      stroke: rgba(132, 209, 252, 0.95);
+    }
+  }
+  .pe-acard__chip text,
+  .pe-acard__label {
+    fill: #fff;
+    font-family: var(--pe-font);
+    font-size: 14px;
+    font-weight: 600;
+    text-anchor: middle;
+  }
+  .pe-acard__core {
+    position: absolute;
+    left: 50%;
+    top: 51.4%;
+    translate: -50% -50%;
+    display: grid;
+    place-items: center;
+    width: 15cqw;
+    aspect-ratio: 1;
+    border-radius: 0 30% 0 30%;
+    background: #fff;
+    color: var(--pe-ink);
+    animation: pe-core 3.2s var(--pe-ease-io) infinite alternate;
+  }
+  .pe-acard__core svg {
+    width: 62%;
+    height: auto;
+  }
+  /* modules */
+  .pe-acard__tiles {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: 5cqw;
+  }
+  .pe-acard__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 11cqw);
+    gap: 2.6cqw;
+  }
+  .pe-acard__grid i {
+    aspect-ratio: 1.35;
+    border-radius: 0 2.6cqw 0 2.6cqw;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    background: rgba(255, 255, 255, 0.05);
+    animation: pe-tile 6s var(--pe-ease) infinite;
+    animation-delay: calc(var(--t) * 60ms);
+  }
+  .pe-acard__grid i.is-pick {
+    animation-name: pe-tile-pick;
+  }
+  /* 0-45%: Full-Service (all lit), 50-95%: Module (only the picked ones) */
+  @keyframes pe-tile {
+    0%,
+    5%,
+    95%,
+    100% {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.22);
+    }
+    12%,
+    42% {
+      background: rgba(73, 181, 242, 0.55);
+      border-color: rgba(132, 209, 252, 0.95);
+    }
+    50%,
+    90% {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.22);
+    }
+  }
+  @keyframes pe-tile-pick {
+    0%,
+    5%,
+    95%,
+    100% {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.22);
+    }
+    12%,
+    42% {
+      background: rgba(73, 181, 242, 0.55);
+      border-color: rgba(132, 209, 252, 0.95);
+    }
+    55%,
+    88% {
+      background: rgba(255, 188, 125, 0.55);
+      border-color: rgba(255, 214, 170, 0.95);
+    }
+  }
+  .pe-acard__mode {
+    display: grid;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .pe-acard__mode b {
+    grid-area: 1 / 1;
+    text-align: center;
+    animation: pe-mode-a 6s var(--pe-ease) infinite;
+  }
+  .pe-acard__mode b:first-child {
+    color: var(--pe-ice);
+  }
+  .pe-acard__mode b:last-child {
+    color: var(--pe-amber);
+    animation-name: pe-mode-b;
+  }
+  @keyframes pe-mode-a {
+    0%,
+    44%,
+    100% {
+      opacity: 1;
+      translate: 0 0;
+    }
+    48%,
+    96% {
+      opacity: 0;
+      translate: 0 -6px;
+    }
+  }
+  @keyframes pe-mode-b {
+    0%,
+    46%,
+    96%,
+    100% {
+      opacity: 0;
+      translate: 0 6px;
+    }
+    52%,
+    92% {
+      opacity: 1;
+      translate: 0 0;
+    }
+  }
+  /* place */
+  .pe-acard__city {
+    fill: rgba(132, 209, 252, 0.08);
+    stroke: rgba(132, 209, 252, 0.25);
+  }
+  .pe-acard__city--in {
+    fill: rgba(132, 209, 252, 0.14);
+  }
+  .pe-acard__pin {
+    fill: var(--pe-amber);
+  }
+  .pe-acard__pulse {
+    fill: none;
+    stroke: var(--pe-amber);
+    stroke-width: 2;
+    transform-box: fill-box;
+    transform-origin: 50% 50%;
+    animation: pe-pulse 2.4s var(--pe-ease) infinite;
+  }
+  .pe-acard__label--soft {
+    fill: rgba(255, 255, 255, 0.6);
+    font-weight: 500;
+  }
+  .pe-acard__bubbles {
+    position: absolute;
+    left: 26%;
+    top: 12%;
+    display: flex;
+    gap: 2.4cqw;
+  }
+  .pe-acard__bubbles i {
+    display: grid;
+    place-items: center;
+    width: 9.5cqw;
+    aspect-ratio: 1;
+    border-radius: 0 2.6cqw 0 2.6cqw;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--pe-ice);
+    animation: pe-bubble 4.5s var(--pe-ease) infinite;
+    animation-delay: calc(var(--b) * 1.5s);
+  }
+  @keyframes pe-bubble {
+    0%,
+    30%,
+    100% {
+      translate: 0 0;
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.2);
+      color: var(--pe-ice);
+    }
+    10%,
+    20% {
+      translate: 0 -4px;
+      background: rgba(255, 188, 125, 0.22);
+      border-color: rgba(255, 214, 170, 0.9);
+      color: #fff;
+    }
+  }
+  /* body */
+  .pe-acard__body {
+    display: grid;
+    align-content: start;
+    gap: 10px;
+    padding: clamp(24px, 2.6vw, 34px);
+  }
+  .pe-acard__num {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    color: var(--pe-blue);
+  }
+  .pe-acard h3 {
+    font-size: var(--pe-h3);
+    color: var(--pe-navy);
+  }
+  .pe-acard p {
+    font-size: 1rem;
+    color: var(--pe-grey);
+  }
+  .pe-acard mark {
+    padding: 0 0.1em;
+    color: var(--pe-navy);
+    font-weight: 600;
+    background: linear-gradient(90deg, rgba(73, 181, 242, 0.24), rgba(255, 188, 125, 0.34)) 0 88% / 100% 0.45em
+      no-repeat;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+</style>

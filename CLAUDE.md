@@ -29,7 +29,9 @@ Do not switch Astro to `output: 'server'`. SMTP env vars: `.env.example` (recipi
 ```
 src/pages/{index,impressum,datenschutz}         routes
 src/components/home/NN-name.astro                 01 hero · 02 about · 03 services · 04 band · 05 founder · 06 contact
-src/scripts/particles.ts                          hero light particles (canvas) incl. the logo-bar formation
+src/scripts/particles.ts                          hero + footer light particles (canvas) incl. the PE mark formation
+src/components/ui/logo-paths.ts                   logo path data, shared by Logo.astro and the particle formation
+src/components/home/AboutCard.astro               Über uns cards with live scenes (team / modules / place)
 src/components/{Header,Footer}.astro              anchor nav + phone + drawer; navy footer
 src/components/ui/{Logo,Icon}.astro               vectorised logo (dark parts = currentColor; `mark` = P/E only)
 src/templates/Legal.astro + src/content/legal/    Impressum (1:1) and Datenschutz (DEMO DRAFT)
@@ -41,12 +43,16 @@ src/pages/api/contact.ts                          form endpoint (honeypot, rate 
 ## Decisions (keep these)
 - Content 1:1 from pe-admin.de; new microcopy is listed in `docs/STATUS.md` and needs client approval.
 - **Hero = pure particle field** (Honza): no stock photos. The light particles imitate the sparks baked into
-  the two old hero photos (amber + cyan sparks, blue-grey bokeh, warm focal flare). On desktop ~460 sparks gather
-  into the three E-bars of the logo and dissolve on scroll. No cursor reaction.
+  the two old hero photos (amber + cyan sparks, blue-grey bokeh, warm focal flare). On desktop ~860 sparks glide into
+  the real PE mark (sampled from the logo paths: white P, blue E-bars) with an eased in-out blend, no spring
+  (Honza found the spring wobble too much), and drift apart on scroll. **No bokeh discs** (Honza: "vibecoded");
+  depth comes from a fine dust layer, slow conic light rays from the mark (`@property --pe-ray`) and the
+  gradient. No cursor reaction. Footer reuses the engine (`formation: false`, low density).
 - The two old hero photos became animations: puzzle pieces locking (Über uns) and the flowchart (Leistungen).
 - Leistungen = selectable module board (their text offers Full-Service or single modules); the selection is
   sent with the enquiry (`pe:modules` event → hidden field `modules`).
 - Signature shape: logo E-bars → "leaf" corners (`--pe-leaf`: rounded top-right + bottom-left).
+- Header: fixed and always visible, compact once scrolled; dark glass only over full-width dark sections.
 - Phone number is shown (Honza). Clients are addressed with "Sie".
 
 ## Gotchas

@@ -27,16 +27,22 @@
     {
       "key": "team",
       "label": "Unser Team",
+      "mark": "bankenspezifischen Vorbildungen",
+      "scene": ["Kunden", "Anleger", "Behörden"],
       "text": "Unser Team verfügt über einen fundierten Erfahrungsschatz im Bereich der professionellen Fondsadministration. Aufgrund der überwiegend bankenspezifischen Vorbildungen ist unser Team hinsichtlich bestehender Anforderungen sehr versiert und weiß Neuerungen auch stets zielgerichtet umzusetzen. Eine höchst professionelle Kommunikation, sowohl mit unseren Kunden, deren Anleger als auch gegenüber Behörden ist für uns selbstverständlich."
     },
     {
       "key": "modules",
       "label": "Full-Service oder Module",
+      "mark": "einzelne Module",
+      "scene": ["Full-Service", "Module"],
       "text": "Neben einem Full-Service-Approach können Sie selbstverständlich auch einzelne Module aus unserem Leistungsangebot wählen, bei welchen Sie Unterstützung benötigen. Wir stellen uns stets auf die Anforderungen und Wünsche unserer Kunden ein und bieten diesen eine kompetente und zuverlässige Unterstützung."
     },
     {
       "key": "place",
       "label": "Münchner Westen",
+      "mark": "per Videokonferenz, per Mail oder auch klassisch per Telefon",
+      "scene": ["Gilching", "München"],
       "text": "Unser Sitz ist im Münchner Westen, von welchem wir hauptsächlich agieren. Vorrangig erreichen Sie uns per Videokonferenz, per Mail oder auch klassisch per Telefon. Neben unseren Räumlichkeiten verfügen wir über Besprechungsräume in München, welche für Meetings genutzt werden können."
     }
   ],

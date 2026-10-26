@@ -55,8 +55,7 @@ function initHeader() {
     ticking = false;
     const y = window.scrollY;
     hd.classList.toggle('is-scrolled', y > 24);
-    if (y > lastY + 4 && y > 480 && !hd.classList.contains('is-open')) hd.classList.add('is-hidden');
-    else if (y < lastY - 4 || y < 480) hd.classList.remove('is-hidden');
+    // PE Admin: the header stays visible and turns compact once scrolled (CSS: .pe-hd.is-scrolled)
     if (Math.abs(y - lastY) > 4) lastY = y;
   };
   addEventListener(
