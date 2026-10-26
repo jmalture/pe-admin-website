@@ -84,7 +84,7 @@ const flow = [
       </div>
     </div>
 
-    <div class="pe-board" data-board>
+    <div class="pe-board" id="module" data-board>
       <div class="pe-board__bar">
         <label class="pe-switch">
           <input type="checkbox" data-full />
@@ -291,6 +291,22 @@ const flow = [
   .pe-board {
     position: relative;
     margin-top: clamp(48px, 6vw, 88px);
+    scroll-margin-top: 8px; /* + the 68px scroll-padding on html = clear of the compact header */
+  }
+  /* arriving from "Module auswählen" in the contact form: the cards light up once, one after another */
+  .pe-board.is-hint .pe-mod {
+    animation: pe-mod-hint 1.4s var(--pe-ease) calc(var(--i, 0) * 70ms + 350ms);
+  }
+  @keyframes pe-mod-hint {
+    0%,
+    100% {
+      box-shadow: 0 0 0 0 rgba(255, 188, 125, 0);
+    }
+    35% {
+      box-shadow:
+        0 0 0 2px rgba(255, 188, 125, 0.7),
+        0 0 28px rgba(255, 188, 125, 0.25);
+    }
   }
   .pe-board__bar {
     position: sticky;

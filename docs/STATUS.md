@@ -20,7 +20,8 @@
 - Über uns card labels: "Unser Team", "Full-Service oder Module", "Münchner Westen".
 - Leistungen: heading "Full-Service oder einzelne Module.", the hint sentence, board labels (Full-Service,
   Auswählen/Ausgewählt, counter, "Anfrage mit Auswahl"); flow scene labels Fonds, Bundesbank, BaFin, BZSt, Investoren.
-- Kontakt: heading "Wie können wir Sie entlasten?", "Ihre Auswahl" box, consent sentence, "So erreichen Sie uns",
+- Kontakt: heading "Wie können wir Sie entlasten?", "Ihre Auswahl" box (button "Module auswählen" / link
+  "Auswahl ändern", jumps back to the module board), consent sentence, "So erreichen Sie uns",
   "Termin per E-Mail oder Telefon vereinbaren", "Besprechungsräume in München für Meetings" (from the Über uns text).
 - Footer claim "Fondsadministration für Private Equity und Venture Capital."
 - Hero: the claim sentence is split into headline + lead (wording unchanged).

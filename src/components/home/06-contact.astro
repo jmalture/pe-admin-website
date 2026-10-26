@@ -21,8 +21,13 @@ import { T, FIRM } from '../../i18n';
         </div>
         <input type="hidden" name="modules" value="" data-modules-field />
         <div class="pe-form__modules" data-modules-box>
-          <span class="pe-form__modules-label">{T.f_modules}</span>
-          <span class="pe-form__chips" data-chips data-empty={T.f_modules_none}>{T.f_modules_none}</span>
+          <div class="pe-form__modules-text">
+            <span class="pe-form__modules-label">{T.f_modules}</span>
+            <span class="pe-form__chips" data-chips data-empty={T.f_modules_none}>{T.f_modules_none}</span>
+          </div>
+          <a class="pe-form__modules-go" href="/#module" data-modules-go data-edit={T.f_modules_edit}
+            ><span>{T.f_modules_go}</span><Icon name="arrow-up" size={15} /></a
+          >
         </div>
         <div class="pe-form__row">
           <label class="pe-field">
@@ -129,6 +134,21 @@ import { T, FIRM } from '../../i18n';
     const field = form.querySelector<HTMLInputElement>('[data-modules-field]')!;
     const chips = form.querySelector<HTMLElement>('[data-chips]')!;
     const box = form.querySelector<HTMLElement>('[data-modules-box]')!;
+    // "Module auswählen" / "Auswahl ändern": back up to the module board, which lights up once on arrival
+    const go = box.querySelector<HTMLAnchorElement>('[data-modules-go]')!;
+    const goLabel = go.querySelector('span')!;
+    const goEmpty = goLabel.textContent!;
+    const board = document.getElementById('module');
+    go.addEventListener('click', (e) => {
+      if (!board) return;
+      e.preventDefault();
+      const smooth = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+      board.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto', block: 'start' });
+      board.classList.remove('is-hint');
+      void board.offsetWidth;
+      board.classList.add('is-hint');
+      setTimeout(() => board.classList.remove('is-hint'), 3200);
+    });
     document.addEventListener('pe:modules', (e) => {
       const list: string[] = (e as CustomEvent).detail.modules;
       field.value = list.join(', ');
@@ -138,6 +158,7 @@ import { T, FIRM } from '../../i18n';
           : [document.createTextNode(chips.dataset.empty!)]),
       );
       box.classList.toggle('has-pick', list.length > 0);
+      goLabel.textContent = list.length ? go.dataset.edit! : goEmpty;
       box.classList.remove('is-flash');
       void box.offsetWidth;
       box.classList.add('is-flash');
@@ -188,8 +209,12 @@ import { T, FIRM } from '../../i18n';
     left: -9999px;
   }
   .pe-form__modules {
-    display: grid;
-    gap: 8px;
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px 20px;
     padding: 16px 18px;
     border: 1px dashed var(--pe-line);
     border-radius: var(--pe-leaf);
@@ -212,6 +237,60 @@ import { T, FIRM } from '../../i18n';
     100% {
       box-shadow: 0 0 0 14px rgba(255, 188, 125, 0);
     }
+  }
+  .pe-form__modules:hover {
+    border-color: rgba(27, 110, 168, 0.45);
+  }
+  .pe-form__modules-text {
+    display: grid;
+    gap: 8px;
+    flex: 1 1 260px;
+  }
+  /* the whole box is the link target (stretched ::after), the visible part is a small button */
+  .pe-form__modules-go {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 16px;
+    border-radius: 0 12px 0 12px;
+    background: var(--pe-blue);
+    color: #fff;
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+    transition:
+      background-color var(--pe-fast) var(--pe-ease),
+      color var(--pe-fast) var(--pe-ease);
+  }
+  .pe-form__modules-go::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+  }
+  .pe-form__modules-go svg {
+    transition: translate var(--pe-med) var(--pe-ease);
+  }
+  .pe-form__modules:hover .pe-form__modules-go {
+    background: var(--pe-navy);
+  }
+  .pe-form__modules:hover .pe-form__modules-go svg {
+    translate: 0 -3px;
+  }
+  .pe-form__modules-go:focus-visible {
+    outline: 2px solid var(--pe-sky);
+    outline-offset: 3px;
+  }
+  /* with a selection it steps back to a quiet text link */
+  .pe-form__modules.has-pick .pe-form__modules-go {
+    padding: 6px 0;
+    background: none;
+    color: var(--pe-blue);
+  }
+  .pe-form__modules.has-pick:hover .pe-form__modules-go {
+    background: none;
+    color: var(--pe-navy);
   }
   .pe-form__modules-label {
     font-size: 0.75rem;

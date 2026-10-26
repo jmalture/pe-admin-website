@@ -85,6 +85,8 @@
   "f_message": "Nachricht",
   "f_modules": "Ihre Auswahl",
   "f_modules_none": "Keine Module ausgewählt, gerne auch Full-Service.",
+  "f_modules_go": "Module auswählen",
+  "f_modules_edit": "Auswahl ändern",
   "f_consent": "Ich habe die <a href=\"/datenschutz/\">Datenschutzerklärung</a> gelesen und bin mit der Verarbeitung meiner Angaben zur Bearbeitung der Anfrage einverstanden.",
   "f_send": "Senden",
   "f_sending": "Wird gesendet …",
