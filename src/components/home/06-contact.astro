@@ -7,13 +7,14 @@
  * docs/STATUS.md.
  */
 import Icon from '../ui/Icon.astro';
+import Logo from '../ui/Logo.astro';
 import { T, FIRM } from '../../i18n';
 ---
 
 <section class="pe-section pe-contact" id="kontakt">
   <div class="pe-wrap pe-contact__grid">
     <div class="pe-contact__form">
-      <span class="pe-kicker" data-reveal>{T.contact_kicker}</span>
+      <span class="pe-kicker" data-reveal><Logo mark class="pe-kicker__mark" label="" />{T.contact_kicker}</span>
       <h2 class="pe-h2 pe-lines"><span class="pe-line"><span>{T.ch_cta_title}</span></span></h2>
       <form class="pe-form" action="/api/contact/" method="post" data-contact-form novalidate data-reveal style="--i:2">
         <div class="pe-form__hp" aria-hidden="true">

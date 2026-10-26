@@ -51,7 +51,8 @@ src/pages/api/contact.ts                          form endpoint (honeypot, rate 
 - The two old hero photos became animations: puzzle pieces locking (Über uns) and the flowchart (Leistungen).
 - Leistungen = selectable module board (their text offers Full-Service or single modules); the selection is
   sent with the enquiry (`pe:modules` event → hidden field `modules`).
-- Signature shape: logo E-bars → "leaf" corners (`--pe-leaf`: rounded top-right + bottom-left).
+- Signature shape: logo E-bars → "leaf" corners (`--pe-leaf`: rounded top-right + bottom-left). Section eyebrows
+  (`.pe-kicker`) carry the real P/E symbol (`<Logo mark class="pe-kicker__mark" label="" />`).
 - Header: fixed and always visible, compact once scrolled; dark glass only over full-width dark sections.
 - Phone number is shown (Honza). Clients are addressed with "Sie".
 

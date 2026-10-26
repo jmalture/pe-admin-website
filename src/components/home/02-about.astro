@@ -8,6 +8,7 @@
  * Texts 1:1 from pe-admin.de.
  */
 import AboutCard from './AboutCard.astro';
+import Logo from '../ui/Logo.astro';
 import { T } from '../../i18n';
 
 const words = T.about_intro.split(' ');
@@ -73,7 +74,7 @@ const pieceB = piece(240, 85, 150, [-1, 0, 1, -1]);
 
 <section class="pe-section pe-about" id="ueber-uns">
   <div class="pe-wrap">
-    <span class="pe-kicker" data-reveal>{T.about_kicker}</span>
+    <span class="pe-kicker" data-reveal><Logo mark class="pe-kicker__mark" label="" />{T.about_kicker}</span>
     <p class="pe-about__intro" data-words>
       {
         words.map((w, i) => (

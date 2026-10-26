@@ -163,7 +163,7 @@ textarea {
 }
 
 /* ---------- Type helpers ---------- */
-/* kicker with the logo's three bars */
+/* kicker (section eyebrow) with the real P/E symbol: P in navy (white on dark), E-bars in the brand blues */
 .pe-kicker {
   display: inline-flex;
   align-items: center;
@@ -174,33 +174,18 @@ textarea {
   text-transform: uppercase;
   color: var(--pe-blue);
 }
-.pe-kicker::before {
-  content: '';
-  width: 22px;
-  height: 14px;
-  background:
-    linear-gradient(var(--pe-blue), var(--pe-blue)) 0 0 / 100% 3px no-repeat,
-    linear-gradient(var(--pe-sky), var(--pe-sky)) 0 50% / 70% 3px no-repeat,
-    linear-gradient(var(--pe-blue), var(--pe-blue)) 0 100% / 100% 3px no-repeat;
+.pe-kicker__mark {
+  flex: none;
+  width: auto;
+  height: 20px;
+  color: var(--pe-navy);
 }
 .pe-dark .pe-kicker,
 .pe-kicker--light {
   color: var(--pe-ice);
 }
-.pe-dark .pe-kicker::before,
-.pe-kicker--light::before {
-  background:
-    linear-gradient(var(--pe-ice), var(--pe-ice)) 0 0 / 100% 3px no-repeat,
-    linear-gradient(var(--pe-amber), var(--pe-amber)) 0 50% / 70% 3px no-repeat,
-    linear-gradient(var(--pe-ice), var(--pe-ice)) 0 100% / 100% 3px no-repeat;
-}
-/* hero kicker: the real P/E symbol instead of the bars (white P, brand-blue E-bars) */
-.pe-kicker--mark::before {
-  content: none;
-}
-.pe-kicker__mark {
-  width: auto;
-  height: 22px;
+.pe-dark .pe-kicker__mark,
+.pe-kicker--light .pe-kicker__mark {
   color: #fff;
 }
 .pe-h2 {

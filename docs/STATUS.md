@@ -13,7 +13,7 @@
   compact (80 → 60 px) once scrolled, dark glass over full-width dark sections; calm spark field in the footer;
   hero: sparks glide (eased, no spring wobble) into the real PE mark (white P, blue E-bars, sampled from the logo
   paths); bokeh discs replaced by fine dust + slow light rays from the mark and a richer night gradient; hero
-  kicker shows the real P/E symbol.
+  kicker shows the real P/E symbol; all section eyebrows (kickers) carry the P/E symbol instead of the bars.
 - Contact endpoint `/api/contact` (stores to `data/submissions`, mails once SMTP env vars are set).
 
 ## New copy (not on pe-admin.de, needs client approval)
