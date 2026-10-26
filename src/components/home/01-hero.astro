@@ -54,7 +54,7 @@ import { T } from '../../i18n';
       radial-gradient(90% 55% at 30% 105%, rgba(16, 120, 140, 0.28), transparent 70%),
       linear-gradient(168deg, #052b42 0%, #03223a 45%, var(--pe-night) 100%);
   }
-  /* slow light rays fanning out from the mark: two conic layers with uneven spacing turning in opposite
+  /* faint, slow light rays fanning out from the mark (kept subtle on purpose): two conic layers with uneven spacing turning in opposite
      directions, masked to fade out with distance */
   @property --pe-ray {
     syntax: '<angle>';
@@ -68,14 +68,24 @@ import { T } from '../../i18n';
     inset: 0;
     z-index: -2;
     pointer-events: none;
-    -webkit-mask: radial-gradient(70% 85% at var(--fx) var(--fy), #000 0%, rgba(0, 0, 0, 0.45) 35%, transparent 72%);
-    mask: radial-gradient(70% 85% at var(--fx) var(--fy), #000 0%, rgba(0, 0, 0, 0.45) 35%, transparent 72%);
+    -webkit-mask: radial-gradient(
+      70% 85% at var(--fx) var(--fy),
+      rgba(0, 0, 0, 0.8) 0%,
+      rgba(0, 0, 0, 0.35) 30%,
+      transparent 64%
+    );
+    mask: radial-gradient(
+      70% 85% at var(--fx) var(--fy),
+      rgba(0, 0, 0, 0.8) 0%,
+      rgba(0, 0, 0, 0.35) 30%,
+      transparent 64%
+    );
   }
   .pe-hero::before {
     background: repeating-conic-gradient(
       from var(--pe-ray) at var(--fx) var(--fy),
       transparent 0deg,
-      rgba(132, 209, 252, 0.075) 2.5deg,
+      rgba(132, 209, 252, 0.042) 2.5deg,
       transparent 5deg 13deg
     );
     animation: pe-rays 220s linear infinite;
@@ -84,7 +94,7 @@ import { T } from '../../i18n';
     background: repeating-conic-gradient(
       from var(--pe-ray) at var(--fx) var(--fy),
       transparent 0deg 6deg,
-      rgba(255, 200, 150, 0.05) 9deg,
+      rgba(255, 200, 150, 0.028) 9deg,
       transparent 12deg 21deg
     );
     animation: pe-rays 300s linear infinite reverse;
