@@ -1,0 +1,140 @@
+---
+/** Footer: navy with a faint spark field, logo, claim, contact, anchors and legal links. */
+import Logo from './ui/Logo.astro';
+import Icon from './ui/Icon.astro';
+import { T, FIRM } from '../i18n';
+const year = new Date().getFullYear();
+---
+
+<footer class="pe-ft pe-dark">
+  <div class="pe-wrap">
+    <div class="pe-ft__top">
+      <div class="pe-ft__brand">
+        <a href="/" class="pe-ft__logo" aria-label="PE Admin GmbH"><Logo /></a>
+        <p>{T.footer_claim}</p>
+      </div>
+      <address class="pe-ft__contact">
+        <strong>{FIRM.name}</strong>
+        <span>{FIRM.street}, {FIRM.zip} {FIRM.city}</span>
+        <a href={FIRM.phoneHref}><Icon name="phone" size={16} />{FIRM.phone}</a>
+        <a href={`mailto:${FIRM.mail}`}><Icon name="mail" size={16} />{FIRM.mail}</a>
+      </address>
+      <nav class="pe-ft__nav" aria-label="Footer">
+        <ul>
+          {
+            T.nav.map(([id, label]) => (
+              <li>
+                <a href={`/#${id}`}>{label}</a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+    </div>
+    <div class="pe-ft__base">
+      <span>© {year} {FIRM.name}</span>
+      <ul>
+        <li><a href="/impressum/">{T.impressum}</a></li>
+        <li><a href="/datenschutz/">{T.datenschutz}</a></li>
+        <li><a href="https://alture.io/" target="_blank" rel="noopener">{T.made_by}</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<style is:global>
+  .pe-ft {
+    position: relative;
+    overflow: clip;
+    padding: clamp(64px, 8vw, 110px) 0 32px;
+    background:
+      radial-gradient(60% 80% at 100% 0%, rgba(27, 110, 168, 0.45), transparent 60%),
+      radial-gradient(40% 60% at 0% 100%, rgba(255, 188, 125, 0.08), transparent 60%), var(--pe-night);
+  }
+  .pe-ft__top {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr auto;
+    gap: clamp(32px, 5vw, 80px);
+    padding-bottom: clamp(40px, 5vw, 64px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  }
+  .pe-ft__logo {
+    display: inline-block;
+    color: #fff;
+  }
+  .pe-ft__logo svg {
+    height: 36px;
+    width: auto;
+  }
+  .pe-ft__brand p {
+    max-width: 30ch;
+    margin-top: 20px;
+    font-size: 1.25rem;
+    font-weight: 500;
+    line-height: 1.4;
+    color: rgba(255, 255, 255, 0.8);
+  }
+  .pe-ft__contact {
+    display: grid;
+    align-content: start;
+    gap: 6px;
+    font-style: normal;
+    color: rgba(255, 255, 255, 0.7);
+  }
+  .pe-ft__contact strong {
+    color: #fff;
+  }
+  .pe-ft__contact a {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 4px;
+    color: #fff;
+    text-decoration: none;
+    transition: color var(--pe-fast) var(--pe-ease);
+  }
+  .pe-ft__contact a:hover,
+  .pe-ft__nav a:hover,
+  .pe-ft__base a:hover {
+    color: var(--pe-ice);
+  }
+  .pe-ft__nav ul {
+    display: grid;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .pe-ft__nav a {
+    font-weight: 500;
+    text-decoration: none;
+    transition: color var(--pe-fast) var(--pe-ease);
+  }
+  .pe-ft__base {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 12px 32px;
+    padding-top: 24px;
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.55);
+  }
+  .pe-ft__base ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 24px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .pe-ft__base a {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    transition: color var(--pe-fast) var(--pe-ease);
+  }
+  @media (max-width: 900px) {
+    .pe-ft__top {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,500 @@
+---
+/**
+ * Leistungen on navy. Top: the flowchart photo of the old hero as a live scene: reports flow from the fund
+ * through PE Admin to Bundesbank, BaFin, BZSt and the investors (sparks along the arrows, nodes light up).
+ * Below: the 8 service groups 1:1 from pe-admin.de as a module board. Their text offers "Full-Service" or
+ * "einzelne Module", so cards can be selected (or all via Full-Service); the selection is passed to the contact
+ * form (event "pe:modules"). Board labels (Auswählen, Full-Service switch, counter) are new microcopy.
+ */
+import Icon from '../ui/Icon.astro';
+import Logo from '../ui/Logo.astro';
+import { T } from '../../i18n';
+
+type IconName = 'report' | 'bank' | 'shield' | 'globe' | 'cash' | 'chart' | 'people' | 'check';
+const flow = [
+  // id, label, x, y
+  ['bbk', 'Bundesbank', 640, 70],
+  ['bafin', 'BaFin', 700, 170],
+  ['bzst', 'BZSt', 700, 270],
+  ['inv', 'Investoren', 640, 370],
+] as const;
+---
+
+<section class="pe-section pe-svc pe-dark" id="leistungen">
+  <div class="pe-svc__bg" aria-hidden="true"></div>
+  <div class="pe-wrap">
+    <div class="pe-svc__head">
+      <div>
+        <span class="pe-kicker" data-reveal>{T.svc_kicker}</span>
+        <h2 class="pe-h2 pe-lines"><span class="pe-line"><span>{T.svc_title}</span></span></h2>
+        <p class="pe-lead" data-reveal style="--i:2">{T.svc_hint}</p>
+      </div>
+      <div class="pe-flow" data-live aria-hidden="true">
+        <svg viewBox="0 0 800 440">
+          <defs>
+            {
+              flow.map(([id, , x, y]) => (
+                <path id={`fl-${id}`} d={`M 400 220 C 500 220, ${x - 120} ${y}, ${x - 62} ${y}`} />
+              ))
+            }
+            <path id="fl-in" d="M 118 220 L 330 220"></path>
+          </defs>
+          <use href="#fl-in" class="pe-flow__path"></use>
+          {flow.map(([id]) => <use href={`#fl-${id}`} class="pe-flow__path" />)}
+          {
+            [0, 1, 2].map((k) => (
+              <circle r="4" class="pe-flow__spark pe-flow__spark--warm" visibility="hidden">
+                <set attributeName="visibility" to="visible" begin={`${k * 0.8}s`} />
+                <animateMotion dur="2.4s" begin={`${k * 0.8}s`} repeatCount="indefinite">
+                  <mpath href="#fl-in" />
+                </animateMotion>
+              </circle>
+            ))
+          }
+          {
+            flow.map(([id], i) =>
+              [0, 1].map((k) => (
+                <circle r="3.4" class="pe-flow__spark" visibility="hidden">
+                  <set attributeName="visibility" to="visible" begin={`${0.6 + i * 0.35 + k * 1.4}s`} />
+                  <animateMotion dur="2.8s" begin={`${0.6 + i * 0.35 + k * 1.4}s`} repeatCount="indefinite">
+                    <mpath href={`#fl-${id}`} />
+                  </animateMotion>
+                </circle>
+              )),
+            )
+          }
+          <g class="pe-flow__node pe-flow__node--fund">
+            <rect x="18" y="180" width="100" height="80" rx="14"></rect>
+            <text x="68" y="226">Fonds</text>
+          </g>
+          {
+            flow.map(([id, label, x, y], i) => (
+              <g class="pe-flow__node" style={`--n:${i}`}>
+                <rect x={x - 62} y={y - 26} width="124" height="52" rx="12" />
+                <text x={x} y={y + 5}>
+                  {label}
+                </text>
+              </g>
+            ))
+          }
+        </svg>
+        <div class="pe-flow__core">
+          <Logo mark />
+        </div>
+      </div>
+    </div>
+
+    <div class="pe-board" data-board>
+      <div class="pe-board__bar">
+        <label class="pe-switch">
+          <input type="checkbox" data-full />
+          <span class="pe-switch__track"><i></i></span>
+          <span>{T.svc_full}</span>
+        </label>
+        <p class="pe-board__count" aria-live="polite" data-count-label>{T.svc_count_0}</p>
+        <a
+          class="pe-btn pe-btn--light pe-btn--sm"
+          href="#kontakt"
+          data-send
+          data-0={T.svc_count_0}
+          data-1={T.svc_count_1}
+          data-n={T.svc_count_n}>{T.svc_send}<Icon name="arrow" size={16} /></a
+        >
+      </div>
+      <ul class="pe-board__grid">
+        {
+          T.svc.map((s, i) => (
+            <li data-reveal style={`--i:${i % 4}`}>
+              <button class="pe-mod" type="button" aria-pressed="false" data-module={s.title}>
+                <span class="pe-mod__top">
+                  <span class="pe-mod__ico">
+                    <Icon name={s.icon as IconName} size={22} />
+                  </span>
+                  <span class="pe-mod__pick">
+                    <span class="pe-mod__pick-off">
+                      <Icon name="plus" size={14} />
+                      {T.svc_pick}
+                    </span>
+                    <span class="pe-mod__pick-on">
+                      <Icon name="check" size={14} />
+                      {T.svc_picked}
+                    </span>
+                  </span>
+                </span>
+                <span class="pe-mod__title">{s.title}</span>
+                {s.sub && <span class="pe-mod__sub">{s.sub}</span>}
+                {s.items.length > 0 && (
+                  <span class="pe-mod__items">
+                    {s.items.map((it) => (
+                      <span>{it}</span>
+                    ))}
+                  </span>
+                )}
+              </button>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-board]').forEach((board) => {
+    const mods = [...board.querySelectorAll<HTMLButtonElement>('[data-module]')];
+    const full = board.querySelector<HTMLInputElement>('[data-full]')!;
+    const label = board.querySelector<HTMLElement>('[data-count-label]')!;
+    const send = board.querySelector<HTMLElement>('[data-send]')!;
+    const update = () => {
+      const picked = mods.filter((m) => m.getAttribute('aria-pressed') === 'true').map((m) => m.dataset.module!);
+      full.checked = picked.length === mods.length;
+      const n = picked.length;
+      label.textContent =
+        n === 0 ? send.dataset['0']! : n === 1 ? send.dataset['1']! : send.dataset.n!.replace('{n}', String(n));
+      board.classList.toggle('has-pick', n > 0);
+      document.dispatchEvent(
+        new CustomEvent('pe:modules', { detail: { modules: full.checked ? ['Full-Service'] : picked } }),
+      );
+    };
+    mods.forEach((m) =>
+      m.addEventListener('click', () => {
+        m.setAttribute('aria-pressed', String(m.getAttribute('aria-pressed') !== 'true'));
+        update();
+      }),
+    );
+    full.addEventListener('change', () => {
+      mods.forEach((m, i) => {
+        // light the cards one after another
+        window.setTimeout(() => m.setAttribute('aria-pressed', String(full.checked)), i * 50);
+      });
+      window.setTimeout(update, mods.length * 50 + 10);
+    });
+  });
+</script>
+
+<style is:global>
+  .pe-svc {
+    overflow: clip;
+    background:
+      radial-gradient(60% 50% at 85% 10%, rgba(27, 110, 168, 0.4), transparent 60%),
+      radial-gradient(50% 40% at 10% 90%, rgba(255, 154, 77, 0.08), transparent 60%), var(--pe-navy);
+  }
+  .pe-svc__bg {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: radial-gradient(rgba(132, 209, 252, 0.13) 1px, transparent 1.5px);
+    background-size: 28px 28px;
+    mask-image: linear-gradient(180deg, #000, transparent 60%);
+  }
+  .pe-svc__head {
+    position: relative;
+    display: grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    gap: clamp(32px, 5vw, 80px);
+    align-items: center;
+  }
+  .pe-svc__head .pe-lead {
+    max-width: 44ch;
+    margin-top: 20px;
+  }
+  /* flow scene */
+  .pe-flow {
+    position: relative;
+  }
+  .pe-flow > svg {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+  .pe-flow__path {
+    fill: none;
+    stroke: rgba(132, 209, 252, 0.28);
+    stroke-width: 1.5;
+    stroke-dasharray: 3 7;
+    animation: pe-flow-dash 1.4s linear infinite;
+  }
+  @keyframes pe-flow-dash {
+    to {
+      stroke-dashoffset: -20;
+    }
+  }
+  .pe-flow__spark {
+    fill: var(--pe-ice);
+    filter: drop-shadow(0 0 6px rgba(132, 209, 252, 0.9));
+  }
+  .pe-flow__spark--warm {
+    fill: var(--pe-amber);
+    filter: drop-shadow(0 0 6px rgba(255, 154, 77, 0.9));
+  }
+  .pe-flow__node rect {
+    fill: rgba(255, 255, 255, 0.07);
+    stroke: rgba(255, 255, 255, 0.22);
+    stroke-width: 1;
+    animation: pe-flow-node 5.6s var(--pe-ease) infinite;
+    animation-delay: calc(1.6s + var(--n, 0) * 0.35s);
+  }
+  .pe-flow__node--fund rect {
+    fill: rgba(255, 188, 125, 0.12);
+    stroke: rgba(255, 188, 125, 0.55);
+    animation: none;
+  }
+  .pe-flow__node text {
+    fill: #fff;
+    font-family: var(--pe-font);
+    font-size: 17px;
+    font-weight: 600;
+    text-anchor: middle;
+  }
+  @keyframes pe-flow-node {
+    0%,
+    60%,
+    100% {
+      fill: rgba(255, 255, 255, 0.07);
+      stroke: rgba(255, 255, 255, 0.22);
+    }
+    70% {
+      fill: rgba(73, 181, 242, 0.22);
+      stroke: rgba(132, 209, 252, 0.95);
+    }
+  }
+  .pe-flow__core {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    translate: -50% -50%;
+    display: grid;
+    place-items: center;
+    width: 17%;
+    aspect-ratio: 1;
+    border-radius: 0 30% 0 30%;
+    background: #fff;
+    color: var(--pe-ink);
+    box-shadow:
+      0 0 0 10px rgba(73, 181, 242, 0.12),
+      0 0 60px rgba(73, 181, 242, 0.45);
+    animation: pe-core 3.2s var(--pe-ease-io) infinite alternate;
+  }
+  .pe-flow__core svg {
+    width: 60%;
+    height: auto;
+  }
+  @keyframes pe-core {
+    to {
+      box-shadow:
+        0 0 0 18px rgba(73, 181, 242, 0.06),
+        0 0 80px rgba(255, 188, 125, 0.35);
+    }
+  }
+
+  /* module board */
+  .pe-board {
+    position: relative;
+    margin-top: clamp(48px, 6vw, 88px);
+  }
+  .pe-board__bar {
+    position: sticky;
+    top: calc(var(--pe-header-h) + 12px);
+    z-index: 2;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px 24px;
+    margin-bottom: 20px;
+    padding: 12px 12px 12px 18px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: var(--pe-leaf);
+    background: rgba(2, 27, 42, 0.78);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  .pe-board__count {
+    margin-right: auto;
+    font-size: 0.9375rem;
+    color: rgba(255, 255, 255, 0.72);
+  }
+  .pe-board.has-pick .pe-board__count {
+    color: #fff;
+    font-weight: 600;
+  }
+  .pe-switch {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .pe-switch input {
+    position: absolute;
+    opacity: 0;
+  }
+  .pe-switch__track {
+    position: relative;
+    width: 48px;
+    height: 26px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.18);
+    transition: background-color var(--pe-med) var(--pe-ease);
+  }
+  .pe-switch__track i {
+    position: absolute;
+    left: 3px;
+    top: 3px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #fff;
+    transition: translate var(--pe-med) var(--pe-ease);
+  }
+  .pe-switch input:checked + .pe-switch__track {
+    background: var(--pe-sky);
+  }
+  .pe-switch input:checked + .pe-switch__track i {
+    translate: 22px 0;
+  }
+  .pe-switch input:focus-visible + .pe-switch__track {
+    outline: 2px solid var(--pe-amber);
+    outline-offset: 3px;
+  }
+  .pe-board__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .pe-board__grid > li {
+    display: flex;
+  }
+  .pe-mod {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    width: 100%;
+    padding: 22px 22px 26px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: var(--pe-leaf);
+    background: rgba(255, 255, 255, 0.04);
+    color: #fff;
+    text-align: left;
+    cursor: pointer;
+    overflow: hidden;
+    transition:
+      border-color var(--pe-med) var(--pe-ease),
+      background-color var(--pe-med) var(--pe-ease),
+      translate var(--pe-med) var(--pe-ease);
+  }
+  /* a warm spark line runs along the top edge when a module is picked */
+  .pe-mod::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 2px;
+    width: 100%;
+    background: linear-gradient(90deg, var(--pe-sky), var(--pe-amber));
+    transform: scaleX(0);
+    transform-origin: 0 50%;
+    transition: transform 700ms var(--pe-ease);
+  }
+  .pe-mod:hover {
+    border-color: rgba(132, 209, 252, 0.45);
+    background: rgba(255, 255, 255, 0.07);
+    translate: 0 -2px;
+  }
+  .pe-mod[aria-pressed='true'] {
+    border-color: rgba(132, 209, 252, 0.8);
+    background: rgba(73, 181, 242, 0.12);
+  }
+  .pe-mod[aria-pressed='true']::before {
+    transform: scaleX(1);
+  }
+  .pe-mod__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 6px;
+  }
+  .pe-mod__ico {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 0 14px 0 14px;
+    background: rgba(132, 209, 252, 0.12);
+    color: var(--pe-ice);
+  }
+  .pe-mod__pick {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.6);
+  }
+  .pe-mod__pick > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .pe-mod__pick-on {
+    display: none !important;
+    color: var(--pe-amber);
+  }
+  .pe-mod[aria-pressed='true'] .pe-mod__pick-off {
+    display: none;
+  }
+  .pe-mod[aria-pressed='true'] .pe-mod__pick-on {
+    display: inline-flex !important;
+  }
+  .pe-mod__title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+  .pe-mod__sub {
+    margin-top: -6px;
+    font-size: 0.8125rem;
+    color: rgba(255, 255, 255, 0.55);
+  }
+  .pe-mod__items {
+    display: grid;
+    gap: 6px;
+    margin-top: 4px;
+    font-size: 0.9375rem;
+    color: rgba(255, 255, 255, 0.74);
+  }
+  .pe-mod__items span {
+    position: relative;
+    padding-left: 16px;
+  }
+  .pe-mod__items span::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.62em;
+    width: 8px;
+    height: 3px;
+    border-radius: 0 3px 0 3px;
+    background: var(--pe-sky);
+  }
+  @media (max-width: 1100px) {
+    .pe-board__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 960px) {
+    .pe-svc__head {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 560px) {
+    .pe-board__grid {
+      grid-template-columns: 1fr;
+    }
+    .pe-board__bar .pe-btn {
+      width: 100%;
+    }
+  }
+</style>

@@ -1,0 +1,86 @@
+---
+/** Impressum / Datenschutz: light page head with the logo bars and the Markdown text from src/content/legal/. */
+import Base from '../layouts/Base.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  draft?: string;
+}
+const { title, description, draft } = Astro.props;
+---
+
+<Base title={`${title} | PE Admin GmbH`} description={description} hero="light">
+  <section class="pe-legal">
+    <div class="pe-wrap pe-legal__wrap">
+      <nav class="pe-legal__crumbs" aria-label="Breadcrumb">
+        <a href="/">PE Admin GmbH</a><span aria-hidden="true">/</span><span aria-current="page">{title}</span>
+      </nav>
+      <h1 class="pe-lines"><span class="pe-line"><span>{title}</span></span></h1>
+      {draft && <p class="pe-legal__draft">{draft}</p>}
+      <div class="pe-prose" data-reveal="fade">
+        <slot />
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style is:global>
+  .pe-legal {
+    padding: calc(var(--pe-header-h) + clamp(40px, 6vw, 88px)) 0 clamp(80px, 10vw, 140px);
+    background:
+      radial-gradient(40% 50% at 100% 0%, rgba(73, 181, 242, 0.18), transparent 60%),
+      linear-gradient(180deg, var(--pe-mist), var(--pe-paper) 420px);
+  }
+  .pe-legal__wrap {
+    max-width: calc(860px + 2 * var(--pe-gutter));
+  }
+  .pe-legal__crumbs {
+    display: flex;
+    gap: 10px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--pe-grey);
+  }
+  .pe-legal__crumbs a {
+    text-decoration: none;
+  }
+  .pe-legal__crumbs a:hover {
+    color: var(--pe-blue);
+  }
+  .pe-legal h1 {
+    margin: 18px 0 clamp(24px, 3vw, 40px);
+    font-size: clamp(2.4rem, 1.6rem + 3vw, 4rem);
+    color: var(--pe-navy);
+  }
+  .pe-legal__draft {
+    margin-bottom: 32px;
+    padding: 14px 18px;
+    border-left: 3px solid var(--pe-amber-2);
+    border-radius: 0 12px 0 12px;
+    background: rgba(255, 188, 125, 0.16);
+    font-size: 0.9375rem;
+  }
+  .pe-prose {
+    font-size: 1.0625rem;
+    line-height: 1.75;
+    color: #2a2f3a;
+  }
+  .pe-prose > * + * {
+    margin-top: 1em;
+  }
+  .pe-prose h2 {
+    margin-top: 2em;
+    font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
+    color: var(--pe-navy);
+  }
+  .pe-prose h2:first-child {
+    margin-top: 0;
+  }
+  .pe-prose a {
+    color: var(--pe-blue);
+    text-underline-offset: 3px;
+  }
+</style>

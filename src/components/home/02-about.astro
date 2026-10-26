@@ -1,0 +1,371 @@
+---
+/**
+ * Über uns. The intro lights up word by word; the puzzle photo from the old hero becomes a live scene next to
+ * "nicht als externen Dienstleister, sondern vielmehr als Teil Ihres Unternehmens": two glowing pieces slide
+ * together when the block scrolls in, a spark flares at the seam and keeps twinkling there.
+ * Below: the remaining three paragraphs as cards (labels are new microcopy, see docs/STATUS.md).
+ * Texts 1:1 from pe-admin.de.
+ */
+import Icon from '../ui/Icon.astro';
+import { T } from '../../i18n';
+
+const words = T.about_intro.split(' ');
+const [before, after] = T.about_part.split(T.about_part_mark);
+const icons: Record<string, 'people' | 'puzzle' | 'pin'> = { team: 'people', modules: 'puzzle', place: 'pin' };
+
+/**
+ * Classic jigsaw piece outline. sides = [top, right, bottom, left]: 1 knob out, -1 socket in, 0 flat.
+ * Edges run clockwise; the knob profile is symmetric, so a knob and the neighbour's socket fit exactly.
+ */
+function piece(x: number, y: number, S: number, sides: [number, number, number, number]) {
+  // knob profile on a unit edge from (0,0) to (1,0); negative v = outwards
+  const prof: [number, number][][] = [
+    [[0.35, 0]],
+    [
+      [0.4, 0],
+      [0.42, -0.02],
+      [0.4, -0.08],
+    ],
+    [
+      [0.36, -0.18],
+      [0.42, -0.28],
+      [0.5, -0.28],
+    ],
+    [
+      [0.58, -0.28],
+      [0.64, -0.18],
+      [0.6, -0.08],
+    ],
+    [
+      [0.58, -0.02],
+      [0.6, 0],
+      [0.65, 0],
+    ],
+    [[1, 0]],
+  ];
+  const corners: [number, number][] = [
+    [x, y],
+    [x + S, y],
+    [x + S, y + S],
+    [x, y + S],
+  ];
+  let d = `M ${x} ${y}`;
+  for (let e = 0; e < 4; e++) {
+    const [ax, ay] = corners[e];
+    const [bx, by] = corners[(e + 1) % 4];
+    const ux = (bx - ax) / S,
+      uy = (by - ay) / S; // along the edge
+    const nx = uy,
+      ny = -ux; // outward normal for a clockwise outline
+    const t = sides[e];
+    const pt = ([u, v]: [number, number]) => {
+      const vv = -v * t; // profile is drawn outwards for t = 1
+      return `${(ax + ux * u * S + nx * vv * S).toFixed(1)} ${(ay + uy * u * S + ny * vv * S).toFixed(1)}`;
+    };
+    if (t === 0) d += ` L ${bx} ${by}`;
+    else for (const seg of prof) d += seg.length === 1 ? ` L ${pt(seg[0])}` : ` C ${seg.map(pt).join(', ')}`;
+  }
+  return d + ' Z';
+}
+const pieceA = piece(90, 85, 150, [1, 1, -1, 0]);
+const pieceB = piece(240, 85, 150, [-1, 0, 1, -1]);
+---
+
+<section class="pe-section pe-about" id="ueber-uns">
+  <div class="pe-wrap">
+    <span class="pe-kicker" data-reveal>{T.about_kicker}</span>
+    <p class="pe-about__intro" data-words>
+      {
+        words.map((w, i) => (
+          <span class="pe-w" style={`--k:${(i / words.length) * 3}`}>
+            {w}{' '}
+          </span>
+        ))
+      }
+    </p>
+
+    <div class="pe-about__part">
+      <div class="pe-puzzle" data-puzzle data-live aria-hidden="true">
+        <svg viewBox="0 0 480 320">
+          <defs>
+            <linearGradient id="pz-a" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#ffffff"></stop>
+              <stop offset="1" stop-color="#d9ecfa"></stop>
+            </linearGradient>
+            <linearGradient id="pz-b" x1="1" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#ffffff"></stop>
+              <stop offset="1" stop-color="#ffe6cf"></stop>
+            </linearGradient>
+            <radialGradient id="pz-glow">
+              <stop offset="0" stop-color="#ffd2a6" stop-opacity="0.95"></stop>
+              <stop offset="0.35" stop-color="#ff9a4d" stop-opacity="0.45"></stop>
+              <stop offset="1" stop-color="#ff9a4d" stop-opacity="0"></stop>
+            </radialGradient>
+          </defs>
+          <circle class="pe-puzzle__halo" cx="240" cy="160" r="150" fill="url(#pz-glow)"></circle>
+          <g class="pe-puzzle__a">
+            <path d={pieceA} fill="url(#pz-a)"></path>
+          </g>
+          <g class="pe-puzzle__b">
+            <path d={pieceB} fill="url(#pz-b)"></path>
+          </g>
+          <g class="pe-puzzle__flare">
+            <circle cx="262" cy="160" r="4" fill="#fff"></circle>
+            <path d="M262 112 L264 158 L262 208 L260 158 Z M206 160 L260 158 L318 160 L260 162 Z" fill="#ffe2c4"></path>
+          </g>
+          <g class="pe-puzzle__sparks">
+            {
+              [
+                [250, 120, 0],
+                [286, 140, 0.4],
+                [232, 196, 0.8],
+                [298, 188, 1.2],
+                [270, 98, 1.6],
+                [214, 132, 2],
+                [310, 160, 2.4],
+                [256, 224, 2.8],
+              ].map(([x, y, d]) => <circle cx={x} cy={y} r="2.2" style={`--d:${d}s`} />)
+            }
+          </g>
+        </svg>
+      </div>
+      <div class="pe-about__copy">
+        <p class="pe-about__quote" data-reveal>
+          {before}<mark>{T.about_part_mark}</mark>{after}
+        </p>
+      </div>
+    </div>
+
+    <ul class="pe-about__points">
+      {
+        T.about_points.map((p, i) => (
+          <li data-reveal style={`--i:${i}`}>
+            <span class="pe-about__ico">
+              <Icon name={icons[p.key]} size={22} />
+            </span>
+            <h3>{p.label}</h3>
+            <p>{p.text}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-puzzle]').forEach((el) => {
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (!e.isIntersecting) return;
+        el.classList.add('is-joined');
+        io.disconnect();
+      },
+      { threshold: 0.45 },
+    );
+    io.observe(el);
+  });
+</script>
+
+<style is:global>
+  .pe-about__intro {
+    max-width: 30ch;
+    margin-top: 22px;
+    font-size: clamp(1.7rem, 1.1rem + 2.4vw, 3.25rem);
+    font-weight: 600;
+    line-height: 1.18;
+    letter-spacing: -0.025em;
+    color: var(--pe-navy);
+  }
+  .pe-about__part {
+    display: grid;
+    grid-template-columns: 1.05fr 1fr;
+    gap: clamp(36px, 6vw, 96px);
+    align-items: center;
+    margin-top: clamp(56px, 7vw, 110px);
+  }
+  /* puzzle scene */
+  .pe-puzzle {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--pe-leaf-lg);
+    background:
+      radial-gradient(70% 70% at 55% 50%, rgba(27, 110, 168, 0.35), transparent 70%),
+      radial-gradient(circle at 18% 22%, rgba(120, 160, 185, 0.22) 0 7%, transparent 7.5%),
+      radial-gradient(circle at 84% 78%, rgba(120, 160, 185, 0.18) 0 9%, transparent 9.5%),
+      radial-gradient(circle at 78% 18%, rgba(90, 140, 170, 0.18) 0 5%, transparent 5.5%),
+      linear-gradient(150deg, #06324b, var(--pe-night));
+  }
+  .pe-puzzle svg {
+    width: 100%;
+    height: auto;
+  }
+  .pe-puzzle__a,
+  .pe-puzzle__b {
+    transform-box: fill-box;
+    transform-origin: 50% 50%;
+    transition: transform 1.8s var(--pe-ease);
+    filter: drop-shadow(0 18px 24px rgba(0, 0, 0, 0.35));
+  }
+  .pe-puzzle__a {
+    transform: translate(-46px, 10px) rotate(-7deg);
+  }
+  .pe-puzzle__b {
+    transform: translate(54px, -12px) rotate(8deg);
+  }
+  .pe-puzzle.is-joined .pe-puzzle__a,
+  .pe-puzzle.is-joined .pe-puzzle__b {
+    transform: none;
+  }
+  .pe-puzzle__halo {
+    opacity: 0.25;
+    transform-box: fill-box;
+    transform-origin: 50% 50%;
+    transition:
+      opacity 1.2s var(--pe-ease) 1.2s,
+      scale 1.2s var(--pe-ease) 1.2s;
+    scale: 0.6;
+  }
+  .pe-puzzle.is-joined .pe-puzzle__halo {
+    opacity: 0.85;
+    scale: 1;
+    animation: pe-pz-breathe 5s var(--pe-ease-io) 2.4s infinite alternate;
+  }
+  @keyframes pe-pz-breathe {
+    to {
+      opacity: 0.55;
+      scale: 0.9;
+    }
+  }
+  .pe-puzzle__flare {
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: 50% 50%;
+    scale: 0.2;
+    mix-blend-mode: screen;
+  }
+  .pe-puzzle.is-joined .pe-puzzle__flare {
+    animation:
+      pe-pz-flare 1.4s var(--pe-ease) 1.5s both,
+      pe-pz-twinkle 4s ease-in-out 3s infinite;
+  }
+  @keyframes pe-pz-flare {
+    0% {
+      opacity: 0;
+      scale: 0.2;
+      rotate: -20deg;
+    }
+    40% {
+      opacity: 1;
+      scale: 1.25;
+    }
+    100% {
+      opacity: 0.8;
+      scale: 1;
+      rotate: 0deg;
+    }
+  }
+  @keyframes pe-pz-twinkle {
+    0%,
+    100% {
+      opacity: 0.8;
+      scale: 1;
+    }
+    50% {
+      opacity: 0.45;
+      scale: 0.82;
+    }
+  }
+  .pe-puzzle__sparks circle {
+    fill: var(--pe-amber);
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: 50% 50%;
+  }
+  .pe-puzzle.is-joined .pe-puzzle__sparks circle {
+    animation: pe-pz-spark 3.2s ease-out calc(1.6s + var(--d)) infinite;
+  }
+  .pe-puzzle__sparks circle:nth-child(3n) {
+    fill: var(--pe-ice);
+  }
+  @keyframes pe-pz-spark {
+    0% {
+      opacity: 0;
+      scale: 0.4;
+      translate: 0 0;
+    }
+    20% {
+      opacity: 1;
+      scale: 1.2;
+    }
+    100% {
+      opacity: 0;
+      scale: 0.6;
+      translate: 0 -26px;
+    }
+  }
+  .pe-about__quote {
+    font-size: clamp(1.4rem, 1.05rem + 1.4vw, 2.1rem);
+    font-weight: 500;
+    line-height: 1.35;
+    letter-spacing: -0.015em;
+    color: var(--pe-ink);
+  }
+  .pe-about__quote mark {
+    padding: 0 0.15em;
+    color: var(--pe-navy);
+    font-weight: 700;
+    background: linear-gradient(90deg, rgba(73, 181, 242, 0.28), rgba(255, 188, 125, 0.4)) 0 88% / 100% 0.42em no-repeat;
+    border-radius: 0 6px 0 6px;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+  .pe-about__points {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(16px, 2vw, 28px);
+    margin: clamp(56px, 7vw, 110px) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .pe-about__points li {
+    position: relative;
+    display: grid;
+    align-content: start;
+    gap: 12px;
+    padding: clamp(26px, 2.8vw, 40px);
+    background: #fff;
+    border: 1px solid var(--pe-line);
+    border-radius: var(--pe-leaf);
+    transition:
+      border-color var(--pe-med) var(--pe-ease),
+      translate var(--pe-med) var(--pe-ease);
+  }
+  .pe-about__points li:hover {
+    border-color: rgba(27, 110, 168, 0.4);
+    translate: 0 -3px;
+  }
+  .pe-about__ico {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 6px;
+    border-radius: 0 14px 0 14px;
+    background: var(--pe-mist);
+    color: var(--pe-blue);
+  }
+  .pe-about__points h3 {
+    font-size: var(--pe-h3);
+    color: var(--pe-navy);
+  }
+  .pe-about__points p {
+    color: var(--pe-grey);
+    font-size: 1rem;
+  }
+  @media (max-width: 960px) {
+    .pe-about__part,
+    .pe-about__points {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,304 @@
+---
+/**
+ * Fixed header: white logo over the dark particle hero, glass-white with navy logo once scrolled (or on light
+ * pages). Anchor navigation (one-pager like pe-admin.de), phone and Kontakt button. Phones: full-screen drawer.
+ * Anchors are absolute (/#leistungen) so they also work from Impressum / Datenschutz.
+ */
+import Logo from './ui/Logo.astro';
+import Icon from './ui/Icon.astro';
+import { T, FIRM } from '../i18n';
+---
+
+<header class="pe-hd" data-header>
+  <div class="pe-hd__bar pe-wrap">
+    <a class="pe-hd__logo" href="/" aria-label="PE Admin GmbH, Startseite"><Logo /></a>
+    <nav class="pe-hd__nav" aria-label="Hauptnavigation">
+      <ul>
+        {
+          T.nav.map(([id, label]) => (
+            <li>
+              <a href={`/#${id}`} data-nav={id}>
+                {label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+    <div class="pe-hd__tools">
+      <a class="pe-hd__phone" href={FIRM.phoneHref}><Icon name="phone" size={16} />{FIRM.phone}</a>
+      <a class="pe-btn pe-btn--sm pe-hd__cta" href="/#kontakt">{T.nav[2][1]}</a>
+      <button class="pe-hd__burger" type="button" aria-expanded="false" aria-controls="pe-drawer" data-burger>
+        <span class="screen-reader-text">{T.menu}</span>
+        <i></i><i></i><i></i>
+      </button>
+    </div>
+  </div>
+  <div class="pe-drawer" id="pe-drawer" data-drawer>
+    <div class="pe-drawer__inner pe-wrap">
+      <ul>
+        {
+          T.nav.map(([id, label], i) => (
+            <li style={`--i:${i}`}>
+              <a href={`/#${id}`}>{label}</a>
+            </li>
+          ))
+        }
+      </ul>
+      <div class="pe-drawer__foot" style="--i:3">
+        <a href={FIRM.phoneHref}><Icon name="phone" size={18} />{FIRM.phone}</a>
+        <a href={`mailto:${FIRM.mail}`}><Icon name="mail" size={18} />{FIRM.mail}</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<script>
+  // Highlight the anchor of the section in view.
+  const links = [...document.querySelectorAll<HTMLAnchorElement>('[data-nav]')];
+  const sections = links.map((a) => document.getElementById(a.dataset.nav!)).filter(Boolean) as HTMLElement[];
+  if (sections.length) {
+    const io = new IntersectionObserver(
+      (es) =>
+        es.forEach((e) => {
+          if (!e.isIntersecting) return;
+          links.forEach((a) => a.classList.toggle('is-current', a.dataset.nav === e.target.id));
+        }),
+      { rootMargin: '-45% 0px -50% 0px' },
+    );
+    sections.forEach((s) => io.observe(s));
+  }
+</script>
+
+<style is:global>
+  .pe-hd {
+    --hd-fg: #fff;
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: 100;
+    color: var(--hd-fg);
+    transition:
+      transform var(--pe-med) var(--pe-ease),
+      color var(--pe-fast) var(--pe-ease);
+  }
+  .pe-hd::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: rgba(248, 251, 255, 0.86);
+    backdrop-filter: saturate(1.4) blur(14px);
+    -webkit-backdrop-filter: saturate(1.4) blur(14px);
+    box-shadow: 0 1px 0 rgba(4, 45, 68, 0.08);
+    opacity: 0;
+    transition: opacity var(--pe-med) var(--pe-ease);
+  }
+  .pe-hd.is-scrolled,
+  [data-hero='light'] .pe-hd {
+    --hd-fg: var(--pe-ink);
+  }
+  .pe-hd.is-scrolled::before,
+  [data-hero='light'] .pe-hd::before {
+    opacity: 1;
+  }
+  .pe-hd.is-hidden {
+    transform: translateY(-100%);
+  }
+  .pe-hd__bar {
+    display: flex;
+    align-items: center;
+    gap: clamp(16px, 3vw, 44px);
+    height: var(--pe-header-h);
+  }
+  .pe-hd__logo {
+    flex: none;
+    color: inherit;
+  }
+  .pe-hd__logo svg {
+    width: auto;
+    height: 30px;
+  }
+  .pe-hd__nav {
+    margin-left: auto;
+  }
+  .pe-hd__nav ul {
+    display: flex;
+    gap: clamp(14px, 2.4vw, 36px);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .pe-hd__nav a {
+    position: relative;
+    padding: 8px 0;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    text-decoration: none;
+  }
+  .pe-hd__nav a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 2px;
+    width: 100%;
+    height: 3px;
+    border-radius: var(--pe-leaf);
+    background: var(--pe-sky);
+    transform: scaleX(0);
+    transform-origin: 0 50%;
+    transition: transform var(--pe-med) var(--pe-ease);
+  }
+  .pe-hd__nav a:hover::after,
+  .pe-hd__nav a.is-current::after {
+    transform: scaleX(1);
+  }
+  .pe-hd__tools {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .pe-hd__phone {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    opacity: 0.85;
+    transition: opacity var(--pe-fast) var(--pe-ease);
+  }
+  .pe-hd__phone:hover {
+    opacity: 1;
+  }
+  .pe-hd__burger {
+    display: none;
+    position: relative;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+  }
+  /* burger drawn as the logo's three bars */
+  .pe-hd__burger i {
+    position: absolute;
+    left: 10px;
+    height: 3px;
+    border-radius: 0 3px 0 3px;
+    background: currentColor;
+    transition:
+      transform var(--pe-med) var(--pe-ease),
+      top var(--pe-med) var(--pe-ease),
+      width var(--pe-med) var(--pe-ease),
+      opacity var(--pe-fast) var(--pe-ease);
+  }
+  .pe-hd__burger i:nth-of-type(1) {
+    top: 14px;
+    width: 24px;
+  }
+  .pe-hd__burger i:nth-of-type(2) {
+    top: 21px;
+    width: 16px;
+    background: var(--pe-sky);
+  }
+  .pe-hd__burger i:nth-of-type(3) {
+    top: 28px;
+    width: 24px;
+  }
+  .pe-hd.is-open .pe-hd__burger i:nth-of-type(1) {
+    top: 21px;
+    transform: rotate(45deg);
+  }
+  .pe-hd.is-open .pe-hd__burger i:nth-of-type(2) {
+    opacity: 0;
+  }
+  .pe-hd.is-open .pe-hd__burger i:nth-of-type(3) {
+    top: 21px;
+    transform: rotate(-45deg);
+  }
+  .pe-drawer {
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    display: none;
+    background: var(--pe-night);
+    color: #fff;
+    clip-path: circle(0 at calc(100% - 40px) 40px);
+    transition: clip-path 700ms var(--pe-ease-io);
+  }
+  .pe-hd.is-open {
+    --hd-fg: #fff;
+  }
+  .pe-hd.is-open::before {
+    opacity: 0;
+  }
+  .pe-hd.is-open .pe-drawer {
+    clip-path: circle(150% at calc(100% - 40px) 40px);
+  }
+  .pe-drawer__inner {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    min-height: 100%;
+    padding-top: calc(var(--pe-header-h) + 32px);
+    padding-bottom: 40px;
+  }
+  .pe-drawer ul {
+    display: grid;
+    gap: 14px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .pe-drawer ul a {
+    font-size: clamp(2rem, 1.4rem + 3vw, 2.75rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    text-decoration: none;
+  }
+  .pe-drawer li,
+  .pe-drawer__foot {
+    opacity: 0;
+    translate: 0 20px;
+    transition:
+      opacity 500ms var(--pe-ease),
+      translate 500ms var(--pe-ease);
+  }
+  .pe-hd.is-open .pe-drawer li,
+  .pe-hd.is-open .pe-drawer__foot {
+    opacity: 1;
+    translate: 0 0;
+    transition-delay: calc(250ms + var(--i) * 70ms);
+  }
+  .pe-drawer__foot {
+    margin-top: auto;
+    display: grid;
+    gap: 12px;
+  }
+  .pe-drawer__foot a {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--pe-ice);
+    text-decoration: none;
+  }
+  @media (max-width: 1000px) {
+    .pe-hd__phone {
+      display: none;
+    }
+  }
+  @media (max-width: 900px) {
+    .pe-hd__nav,
+    .pe-hd__cta {
+      display: none;
+    }
+    .pe-hd__tools {
+      margin-left: auto;
+    }
+    .pe-hd__burger,
+    .pe-drawer {
+      display: block;
+    }
+  }
+</style>

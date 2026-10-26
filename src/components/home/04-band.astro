@@ -1,0 +1,54 @@
+---
+/** Slow marquee of the authorities and reports named in the services (all terms from pe-admin.de). */
+import { T } from '../../i18n';
+const items = [...T.band, ...T.band];
+---
+
+<div class="pe-band" aria-hidden="true">
+  <div class="pe-band__track">
+    {items.map((w) => <span>{w}</span>)}
+  </div>
+</div>
+
+<style is:global>
+  .pe-band {
+    overflow: hidden;
+    padding-block: clamp(26px, 3.5vw, 44px);
+    background: var(--pe-paper);
+    border-bottom: 1px solid var(--pe-line);
+    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  }
+  .pe-band__track {
+    display: flex;
+    width: max-content;
+    animation: pe-marquee 52s linear infinite;
+  }
+  .pe-band span {
+    display: inline-flex;
+    align-items: center;
+    gap: clamp(22px, 3vw, 44px);
+    padding-right: clamp(22px, 3vw, 44px);
+    font-size: clamp(1.4rem, 1rem + 1.6vw, 2.4rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--pe-navy);
+    white-space: nowrap;
+  }
+  .pe-band span:nth-child(3n + 2) {
+    color: transparent;
+    -webkit-text-stroke: 1px var(--pe-blue);
+  }
+  /* separator: a small logo bar */
+  .pe-band span::after {
+    content: '';
+    width: 26px;
+    height: 8px;
+    border-radius: 0 8px 0 8px;
+    background: linear-gradient(90deg, var(--pe-blue), var(--pe-sky));
+  }
+  @keyframes pe-marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+</style>

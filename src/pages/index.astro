@@ -1,0 +1,9 @@
+---
+import Base from '../layouts/Base.astro';
+import Sections from '../components/home/index.astro';
+import { T } from '../i18n';
+---
+
+<Base title={T.meta_title} description={T.meta_desc}>
+  <Sections />
+</Base>

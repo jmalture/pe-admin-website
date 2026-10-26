@@ -1,0 +1,503 @@
+---
+/**
+ * Kontakt: the form of the live site (Name*, E-Mail*, Firma (Optional), Nachricht) posting to /api/contact,
+ * plus the modules picked in the Leistungen board (event "pe:modules") as chips and a hidden field.
+ * Right: the three ways from the Über uns text (Videokonferenz, Mail, Telefon) and a small "Münchner Westen"
+ * drawing: Gilching west of München, linked by a dotted line with travelling sparks. New microcopy listed in
+ * docs/STATUS.md.
+ */
+import Icon from '../ui/Icon.astro';
+import { T, FIRM } from '../../i18n';
+---
+
+<section class="pe-section pe-contact" id="kontakt">
+  <div class="pe-wrap pe-contact__grid">
+    <div class="pe-contact__form">
+      <span class="pe-kicker" data-reveal>{T.contact_kicker}</span>
+      <h2 class="pe-h2 pe-lines"><span class="pe-line"><span>{T.ch_cta_title}</span></span></h2>
+      <form class="pe-form" action="/api/contact/" method="post" data-contact-form novalidate data-reveal style="--i:2">
+        <div class="pe-form__hp" aria-hidden="true">
+          <label>Website <input type="text" name="website" tabindex="-1" autocomplete="off" /></label>
+        </div>
+        <input type="hidden" name="modules" value="" data-modules-field />
+        <div class="pe-form__modules" data-modules-box>
+          <span class="pe-form__modules-label">{T.f_modules}</span>
+          <span class="pe-form__chips" data-chips data-empty={T.f_modules_none}>{T.f_modules_none}</span>
+        </div>
+        <div class="pe-form__row">
+          <label class="pe-field">
+            <input type="text" name="name" required autocomplete="name" placeholder=" " />
+            <span>{T.f_name} *</span>
+          </label>
+          <label class="pe-field">
+            <input type="email" name="email" required autocomplete="email" placeholder=" " />
+            <span>{T.f_email} *</span>
+          </label>
+        </div>
+        <label class="pe-field">
+          <input type="text" name="company" autocomplete="organization" placeholder=" " />
+          <span>{T.f_company}</span>
+        </label>
+        <label class="pe-field">
+          <textarea name="message" rows="5" placeholder=" "></textarea>
+          <span>{T.f_message}</span>
+        </label>
+        <label class="pe-check">
+          <input type="checkbox" name="consent" required />
+          <span set:html={T.f_consent} />
+        </label>
+        <div class="pe-form__foot">
+          <button class="pe-btn" type="submit" data-label={T.f_send} data-busy={T.f_sending}>
+            <span>{T.f_send}</span><Icon name="send" size={17} />
+          </button>
+          <small>{T.contact_required}</small>
+        </div>
+        <p class="pe-form__msg" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+
+    <aside class="pe-reach pe-dark" data-reveal style="--i:2">
+      <h3>{T.ch_title}</h3>
+      <ul class="pe-reach__list">
+        <li>
+          <span class="pe-reach__ico"><Icon name="video" size={20} /></span>
+          <span class="pe-reach__body">
+            <small>{T.ch_video}</small>
+            <span>{T.ch_video_text}</span>
+          </span>
+        </li>
+        <li>
+          <span class="pe-reach__ico"><Icon name="mail" size={20} /></span>
+          <span class="pe-reach__body">
+            <small>{T.ch_mail}</small>
+            <a href={`mailto:${FIRM.mail}`}>{FIRM.mail}</a>
+          </span>
+          <button class="pe-reach__copy" type="button" data-copy={FIRM.mail} aria-label={`${T.ch_copy}: ${FIRM.mail}`}>
+            <Icon name="copy" size={15} /><span>{T.ch_copy}</span><em>{T.ch_copied}</em>
+          </button>
+        </li>
+        <li>
+          <span class="pe-reach__ico"><Icon name="phone" size={20} /></span>
+          <span class="pe-reach__body">
+            <small>{T.ch_phone}</small>
+            <a href={FIRM.phoneHref}>{FIRM.phone}</a>
+          </span>
+          <button
+            class="pe-reach__copy"
+            type="button"
+            data-copy={FIRM.phone}
+            aria-label={`${T.ch_copy}: ${FIRM.phone}`}
+          >
+            <Icon name="copy" size={15} /><span>{T.ch_copy}</span><em>{T.ch_copied}</em>
+          </button>
+        </li>
+      </ul>
+      <div class="pe-reach__map" data-live aria-hidden="true">
+        <svg viewBox="0 0 420 200">
+          <defs><path id="pe-route" d="M 92 118 C 170 70, 250 70, 330 98"></path></defs>
+          <circle cx="330" cy="98" r="54" class="pe-reach__city"></circle>
+          <circle cx="330" cy="98" r="30" class="pe-reach__city pe-reach__city--in"></circle>
+          <use href="#pe-route" class="pe-reach__route"></use>
+          {
+            [0, 1].map((k) => (
+              <circle r="3.5" class="pe-reach__spark" visibility="hidden">
+                <set attributeName="visibility" to="visible" begin={`${k * 1.8}s`} />
+                <animateMotion dur="3.6s" begin={`${k * 1.8}s`} repeatCount="indefinite">
+                  <mpath href="#pe-route" />
+                </animateMotion>
+              </circle>
+            ))
+          }
+          <circle cx="92" cy="118" r="7" class="pe-reach__pin"></circle>
+          <circle cx="92" cy="118" r="7" class="pe-reach__pulse"></circle>
+          <text x="92" y="152" class="pe-reach__label">{FIRM.city}</text>
+          <text x="330" y="168" class="pe-reach__label pe-reach__label--soft">München</text>
+        </svg>
+        <p>
+          <strong>{T.ch_place}</strong>
+          <span>{FIRM.street}, {FIRM.zip} {FIRM.city}</span>
+          <span>{T.ch_place_text}</span>
+        </p>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-contact-form]');
+  if (form) {
+    const field = form.querySelector<HTMLInputElement>('[data-modules-field]')!;
+    const chips = form.querySelector<HTMLElement>('[data-chips]')!;
+    const box = form.querySelector<HTMLElement>('[data-modules-box]')!;
+    document.addEventListener('pe:modules', (e) => {
+      const list: string[] = (e as CustomEvent).detail.modules;
+      field.value = list.join(', ');
+      chips.replaceChildren(
+        ...(list.length
+          ? list.map((m) => Object.assign(document.createElement('b'), { textContent: m }))
+          : [document.createTextNode(chips.dataset.empty!)]),
+      );
+      box.classList.toggle('has-pick', list.length > 0);
+      box.classList.remove('is-flash');
+      void box.offsetWidth;
+      box.classList.add('is-flash');
+    });
+    const btn = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
+    const label = btn.querySelector('span')!;
+    const msg = form.querySelector<HTMLElement>('.pe-form__msg')!;
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!form.reportValidity()) return;
+      btn.disabled = true;
+      label.textContent = btn.dataset.busy!;
+      msg.className = 'pe-form__msg';
+      try {
+        const res = await fetch(form.action, { method: 'POST', body: new FormData(form) });
+        const data = await res.json();
+        msg.textContent = data.message;
+        msg.classList.add(data.ok ? 'is-ok' : 'is-err');
+        if (data.ok) form.reset();
+      } catch {
+        msg.textContent = 'Leider ist ein Fehler aufgetreten. Bitte schreiben Sie an info@pe-admin.de.';
+        msg.classList.add('is-err');
+      } finally {
+        btn.disabled = false;
+        label.textContent = btn.dataset.label!;
+      }
+    });
+  }
+</script>
+
+<style is:global>
+  .pe-contact__grid {
+    display: grid;
+    grid-template-columns: 1.25fr 1fr;
+    gap: clamp(36px, 6vw, 96px);
+    align-items: start;
+  }
+  .pe-contact .pe-h2 {
+    max-width: 22ch;
+  }
+  .pe-form {
+    display: grid;
+    gap: 16px;
+    margin-top: clamp(28px, 3vw, 40px);
+  }
+  .pe-form__hp {
+    position: absolute;
+    left: -9999px;
+  }
+  .pe-form__modules {
+    display: grid;
+    gap: 8px;
+    padding: 16px 18px;
+    border: 1px dashed var(--pe-line);
+    border-radius: var(--pe-leaf);
+    transition:
+      border-color var(--pe-med) var(--pe-ease),
+      background-color var(--pe-med) var(--pe-ease);
+  }
+  .pe-form__modules.has-pick {
+    border-style: solid;
+    border-color: rgba(27, 110, 168, 0.35);
+    background: var(--pe-mist);
+  }
+  .pe-form__modules.is-flash {
+    animation: pe-flash 1.2s var(--pe-ease);
+  }
+  @keyframes pe-flash {
+    0% {
+      box-shadow: 0 0 0 0 rgba(255, 188, 125, 0.6);
+    }
+    100% {
+      box-shadow: 0 0 0 14px rgba(255, 188, 125, 0);
+    }
+  }
+  .pe-form__modules-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--pe-blue);
+  }
+  .pe-form__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 0.9375rem;
+    color: var(--pe-grey);
+  }
+  .pe-form__chips b {
+    padding: 4px 12px;
+    border-radius: 0 10px 0 10px;
+    background: var(--pe-navy);
+    color: #fff;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+  .pe-form__row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .pe-field {
+    position: relative;
+    display: block;
+  }
+  .pe-field input,
+  .pe-field textarea {
+    width: 100%;
+    padding: 26px 16px 10px;
+    border: 1px solid var(--pe-line);
+    border-radius: var(--pe-r);
+    background: #fff;
+    transition:
+      border-color var(--pe-fast) var(--pe-ease),
+      box-shadow var(--pe-fast) var(--pe-ease);
+  }
+  .pe-field textarea {
+    resize: vertical;
+    min-height: 150px;
+  }
+  .pe-field input:focus,
+  .pe-field textarea:focus {
+    outline: none;
+    border-color: var(--pe-blue);
+    box-shadow: 0 0 0 4px rgba(73, 181, 242, 0.18);
+  }
+  .pe-field span {
+    position: absolute;
+    left: 17px;
+    top: 18px;
+    color: var(--pe-grey);
+    pointer-events: none;
+    transform-origin: 0 0;
+    transition:
+      translate var(--pe-fast) var(--pe-ease),
+      scale var(--pe-fast) var(--pe-ease),
+      color var(--pe-fast) var(--pe-ease);
+  }
+  .pe-field :focus + span,
+  .pe-field :not(:placeholder-shown) + span {
+    translate: 0 -11px;
+    scale: 0.78;
+    color: var(--pe-blue);
+  }
+  .pe-check {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    font-size: 0.875rem;
+    color: var(--pe-grey);
+  }
+  .pe-check input {
+    flex: none;
+    width: 18px;
+    height: 18px;
+    margin-top: 2px;
+    accent-color: var(--pe-blue);
+  }
+  .pe-check a {
+    color: var(--pe-blue);
+  }
+  .pe-form__foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px 22px;
+    margin-top: 4px;
+  }
+  .pe-form__foot small {
+    color: var(--pe-grey);
+  }
+  .pe-form__msg {
+    font-weight: 600;
+  }
+  .pe-form__msg.is-ok {
+    color: var(--pe-blue);
+  }
+  .pe-form__msg.is-err {
+    color: #b3261e;
+  }
+
+  /* reach card */
+  .pe-reach {
+    position: sticky;
+    top: calc(var(--pe-header-h) + 24px);
+    padding: clamp(26px, 3vw, 40px);
+    border-radius: var(--pe-leaf-lg);
+    background:
+      radial-gradient(70% 60% at 100% 0%, rgba(27, 110, 168, 0.55), transparent 60%),
+      radial-gradient(50% 40% at 0% 100%, rgba(255, 154, 77, 0.12), transparent 60%), var(--pe-navy);
+  }
+  .pe-reach h3 {
+    font-size: var(--pe-h3);
+  }
+  .pe-reach__list {
+    display: grid;
+    gap: 6px;
+    margin: 22px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .pe-reach__list li {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .pe-reach__ico {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 44px;
+    height: 44px;
+    border-radius: 0 14px 0 14px;
+    background: rgba(132, 209, 252, 0.12);
+    color: var(--pe-ice);
+  }
+  .pe-reach__body {
+    display: grid;
+    min-width: 0;
+    margin-right: auto;
+  }
+  .pe-reach__body small {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--pe-ice);
+  }
+  .pe-reach__body a,
+  .pe-reach__body span {
+    font-weight: 500;
+    text-decoration: none;
+    overflow-wrap: anywhere;
+  }
+  .pe-reach__body a:hover {
+    color: var(--pe-amber);
+  }
+  .pe-reach__copy {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex: none;
+    padding: 7px 11px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    background: none;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.8125rem;
+    cursor: pointer;
+    transition:
+      border-color var(--pe-fast) var(--pe-ease),
+      color var(--pe-fast) var(--pe-ease);
+  }
+  .pe-reach__copy:hover {
+    border-color: var(--pe-ice);
+    color: #fff;
+  }
+  .pe-reach__copy em {
+    display: none;
+    font-style: normal;
+  }
+  .pe-reach__copy.is-copied {
+    border-color: var(--pe-amber);
+    color: var(--pe-amber);
+  }
+  .pe-reach__copy.is-copied span {
+    display: none;
+  }
+  .pe-reach__copy.is-copied em {
+    display: inline;
+  }
+  .pe-reach__map {
+    margin-top: 22px;
+  }
+  .pe-reach__map svg {
+    width: 100%;
+    height: auto;
+  }
+  .pe-reach__city {
+    fill: rgba(132, 209, 252, 0.08);
+    stroke: rgba(132, 209, 252, 0.25);
+  }
+  .pe-reach__city--in {
+    fill: rgba(132, 209, 252, 0.14);
+  }
+  .pe-reach__route {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.35);
+    stroke-width: 1.5;
+    stroke-dasharray: 3 7;
+    animation: pe-flow-dash 1.4s linear infinite;
+  }
+  .pe-reach__spark {
+    fill: var(--pe-amber);
+    filter: drop-shadow(0 0 6px rgba(255, 154, 77, 0.9));
+  }
+  .pe-reach__pin {
+    fill: var(--pe-amber);
+  }
+  .pe-reach__pulse {
+    fill: none;
+    stroke: var(--pe-amber);
+    stroke-width: 2;
+    transform-box: fill-box;
+    transform-origin: 50% 50%;
+    animation: pe-pulse 2.4s var(--pe-ease) infinite;
+  }
+  @keyframes pe-pulse {
+    from {
+      scale: 1;
+      opacity: 0.9;
+    }
+    to {
+      scale: 4;
+      opacity: 0;
+    }
+  }
+  .pe-reach__label {
+    fill: #fff;
+    font-family: var(--pe-font);
+    font-size: 15px;
+    font-weight: 700;
+    text-anchor: middle;
+  }
+  .pe-reach__label--soft {
+    fill: rgba(255, 255, 255, 0.6);
+    font-weight: 500;
+  }
+  .pe-reach__map p {
+    display: grid;
+    gap: 2px;
+    margin-top: 8px;
+    font-size: 0.9375rem;
+    color: rgba(255, 255, 255, 0.72);
+  }
+  .pe-reach__map strong {
+    color: #fff;
+  }
+  @media (max-width: 960px) {
+    .pe-contact__grid {
+      grid-template-columns: 1fr;
+    }
+    .pe-reach {
+      position: static;
+    }
+  }
+  @media (max-width: 560px) {
+    .pe-form__row {
+      grid-template-columns: 1fr;
+    }
+    .pe-reach__body a {
+      white-space: nowrap;
+      overflow-wrap: normal;
+    }
+    .pe-reach__copy span,
+    .pe-reach__copy em {
+      display: none !important;
+    }
+  }
+</style>

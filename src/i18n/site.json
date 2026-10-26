@@ -1,0 +1,100 @@
+{
+  "meta_title": "PE Admin GmbH | Fondsadministration für Private Equity und Venture Capital",
+  "meta_desc": "Die PE Admin GmbH bietet Administrationsleistungen für nationale und internationale Private Equity- und Venture Capital-Fonds an, mit Hauptaugenmerk auf dem gesetzlichen Meldewesen in Deutschland.",
+
+  "nav": [
+    ["ueber-uns", "Über uns"],
+    ["leistungen", "Leistungen"],
+    ["kontakt", "Kontakt"]
+  ],
+  "skip": "Zum Inhalt springen",
+  "menu": "Menü",
+
+  "hero_kicker": "PE Admin GmbH",
+  "hero_l1": "Fokussieren Sie sich",
+  "hero_l2": "auf Ihre Kernkompetenz",
+  "hero_lead": "– die Wertsteigerung Ihres Portfolios im Sinne Ihrer Investoren – und lassen Sie uns zu Ihren Back-Office-Prozessen beitragen.",
+  "hero_cta": "Leistungen",
+  "hero_cta2": "Kontakt",
+  "hero_scroll": "Scroll down",
+
+  "about_kicker": "Über uns",
+  "about_title": "Administrationsleistungen für Private Equity- und Venture Capital-Fonds.",
+  "about_intro": "Die PE Admin GmbH bietet Administrationsleistungen für nationale und internationale Private Equity- und Venture Capital-Fonds an. Neben originären Administrationsleistungen liegt ein Hauptaugenmerk auf dem gesetzlichen Meldewesen in Deutschland.",
+  "about_part": "Wir verstehen uns nicht als externen Dienstleister, sondern vielmehr als Teil Ihres Unternehmens, welcher die Prozesse optimal in Ihrem Sinne angeht und abbildet.",
+  "about_part_mark": "Teil Ihres Unternehmens",
+  "about_points": [
+    {
+      "key": "team",
+      "label": "Unser Team",
+      "text": "Unser Team verfügt über einen fundierten Erfahrungsschatz im Bereich der professionellen Fondsadministration. Aufgrund der überwiegend bankenspezifischen Vorbildungen ist unser Team hinsichtlich bestehender Anforderungen sehr versiert und weiß Neuerungen auch stets zielgerichtet umzusetzen. Eine höchst professionelle Kommunikation, sowohl mit unseren Kunden, deren Anleger als auch gegenüber Behörden ist für uns selbstverständlich."
+    },
+    {
+      "key": "modules",
+      "label": "Full-Service oder Module",
+      "text": "Neben einem Full-Service-Approach können Sie selbstverständlich auch einzelne Module aus unserem Leistungsangebot wählen, bei welchen Sie Unterstützung benötigen. Wir stellen uns stets auf die Anforderungen und Wünsche unserer Kunden ein und bieten diesen eine kompetente und zuverlässige Unterstützung."
+    },
+    {
+      "key": "place",
+      "label": "Münchner Westen",
+      "text": "Unser Sitz ist im Münchner Westen, von welchem wir hauptsächlich agieren. Vorrangig erreichen Sie uns per Videokonferenz, per Mail oder auch klassisch per Telefon. Neben unseren Räumlichkeiten verfügen wir über Besprechungsräume in München, welche für Meetings genutzt werden können."
+    }
+  ],
+
+  "svc_kicker": "Leistungen",
+  "svc_title": "Full-Service oder einzelne Module.",
+  "svc_hint": "Wählen Sie die Module, bei denen Sie Unterstützung benötigen, und senden Sie uns Ihre Auswahl mit Ihrer Anfrage.",
+  "svc_full": "Full-Service",
+  "svc_pick": "Auswählen",
+  "svc_picked": "Ausgewählt",
+  "svc_count_0": "Noch kein Modul ausgewählt",
+  "svc_count_1": "1 Modul ausgewählt",
+  "svc_count_n": "{n} Module ausgewählt",
+  "svc_send": "Anfrage mit Auswahl",
+  "svc": [
+    { "key": "report", "icon": "report", "title": "Berichtswesen", "items": ["Unterstützung/ Erstellung von Fonds-/ Investoren-Reporting", "EVCA-Reporting", "Quartals-Reporting", "Standardisiert / Individualisiert"] },
+    { "key": "bbk", "icon": "bank", "title": "Meldungen an die Bundesbank", "items": ["Statistik über Investmentvermögen", "K3-Meldungen", "K4-Meldungen", "Z4-Meldungen"] },
+    { "key": "bafin", "icon": "shield", "title": "Meldungen an die BaFin", "sub": "Bundesanstalt für Finanzdienstleistungsaufsicht", "items": ["AIFMD-Reporting"] },
+    { "key": "bzst", "icon": "globe", "title": "Meldungen an das Bundeszentralamt für Steuern", "items": ["FATCA/CRS-Meldungen"] },
+    { "key": "cash", "icon": "cash", "title": "Cash-Management und Liquidationsdienstleistungen", "items": ["Cash-Flow-Überwachung", "Zahlungsabwicklung"] },
+    { "key": "kpi", "icon": "chart", "title": "Berechnung / Validierung v. Kennzahlen", "items": ["IRR", "Carry-Berechnungen"] },
+    { "key": "ir", "icon": "people", "title": "Investor-Relations", "items": ["Prüfung von Zeichnungsscheinen", "Stammdatenpflege", "Bearbeitung von Investorenanfragen", "Erstellung / Versand von Kapitalabrufschreiben", "Erstellung / Versand von Ausschüttungsmitteilungen"] },
+    { "key": "kyc", "icon": "check", "title": "Unterstützung im Bereich Geldwäsche / KYC", "sub": "Know Your Customer", "items": [] }
+  ],
+
+  "band": ["Bundesbank", "BaFin", "Bundeszentralamt für Steuern", "EVCA", "AIFMD", "FATCA/CRS", "K3", "K4", "Z4", "IRR", "KYC"],
+
+  "founder_text_1": "Gerne erörtern wir im Rahmen unseres Erstkontakts, wie wir Sie künftig unterstützen und entlasten können.",
+  "founder_text_2": "Wir freuen uns auf Ihre Anfrage und werden uns schnellstmöglich bei Ihnen melden.",
+  "founder_name": "Franz Swidriw",
+  "founder_role": "Founder & CEO",
+
+  "contact_kicker": "Kontakt",
+  "contact_title": "Kontakt",
+  "ch_cta_title": "Wie können wir Sie entlasten?",
+  "contact_required": "Felder mit einem * sind Pflichtfelder.",
+  "f_name": "Name",
+  "f_email": "E-Mail",
+  "f_company": "Firma (Optional)",
+  "f_message": "Nachricht",
+  "f_modules": "Ihre Auswahl",
+  "f_modules_none": "Keine Module ausgewählt, gerne auch Full-Service.",
+  "f_consent": "Ich habe die <a href=\"/datenschutz/\">Datenschutzerklärung</a> gelesen und bin mit der Verarbeitung meiner Angaben zur Bearbeitung der Anfrage einverstanden.",
+  "f_send": "Senden",
+  "f_sending": "Wird gesendet …",
+  "ch_title": "So erreichen Sie uns",
+  "ch_video": "Videokonferenz",
+  "ch_video_text": "Termin per E-Mail oder Telefon vereinbaren",
+  "ch_mail": "E-Mail",
+  "ch_phone": "Telefon",
+  "ch_copy": "Kopieren",
+  "ch_copied": "Kopiert",
+  "ch_place": "Münchner Westen",
+  "ch_place_text": "Besprechungsräume in München für Meetings",
+
+  "footer_claim": "Fondsadministration für Private Equity und Venture Capital.",
+  "impressum": "Impressum",
+  "datenschutz": "Datenschutz",
+  "made_by": "Webdesign by Alture",
+  "to_top": "Nach oben"
+}
